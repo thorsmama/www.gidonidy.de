@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Teams Meeting Booker</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <div class="main-container">
+        <div class="info-pane">
+            <h1>Microsoft Teams Meeting Booker</h1>
+            <p>Use this page to book a Teams meeting in your calendar.</p>
+        </div>
+        <div class="form-pane">
+            <div id="auth-container">
+                <button id="signInButton" onclick="signIn()">Sign In with Microsoft</button>
+            </div>
+
+            <div id="meeting-form" style="display:none;">
+                <h2>Welcome, <span id="userName"></span></h2>
+                <p>Fill out the form below to create a new meeting.</p>
+                <form id="createMeetingForm">
+                    <label for="subject">Subject:</label>
+                    <input type="text" id="subject" name="subject" required>
+
+                    <label for="attendees">Attendees (comma-separated emails):</label>
+                    <input type="text" id="attendees" name="attendees">
+
+                    <label for="startDateTime">Start Time:</label>
+                    <input type="datetime-local" id="startDateTime" name="startDateTime" required>
+
+                    <label for="endDateTime">End Time:</label>
+                    <input type="datetime-local" id="endDateTime" name="endDateTime" required>
+
+                    <button type="submit">Create Meeting</button>
+                </form>
+                <button id="signOutButton" onclick="signOut()" style="display:none;">Sign Out</button>
+            </div>
+            <div id="response" style="margin-top: 20px;"></div>
+        </div>
+    </div>
+
+    <script src="https://alcdn.msauth.net/browser/2.14.2/js/msal-browser.min.js"></script>
+    <script src="app.js"></script>
+</body>
+
+</html>

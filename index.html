@@ -1,0 +1,1591 @@
+<!DOCTYPE html>
+<html lang="de">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="favicon.ico" type="image/x-icon">
+    <title>GidonIdy.de</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@700&family=Share+Tech+Mono&display=swap');
+
+        body {
+            color: #fff;
+            min-height: 100vh;
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            font-family: 'Orbitron', 'Share Tech Mono', 'Arial', sans-serif;
+            background: linear-gradient(135deg, #121212 0%, #1d1d1d 100%);
+            letter-spacing: 0.04em;
+        }
+
+        .background-img {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            z-index: -1;
+            background: linear-gradient(120deg, #121212 0%, #1d1d1d 100%);
+            opacity: 0.95;
+        }
+
+        #sendForm {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            background: rgba(22, 22, 22, 0.95);
+            padding: 32px 24px;
+            border-radius: 18px;
+            box-shadow: 0 0 32px 4px #818181cc, 0 0 0 4px #a7a7a744;
+            border: 2px solid #818181;
+            position: relative;
+            overflow: hidden;
+        }
+
+        #sendForm::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            border-radius: 18px;
+            pointer-events: none;
+            border: 2px solid transparent;
+            box-shadow: 0 0 32px 8px #a7a7a788, 0 0 16px 4px #818181aa inset;
+            animation: neon-border 2.5s linear infinite;
+        }
+
+        @keyframes neon-border {
+            0% {
+                box-shadow: 0 0 32px 8px #a7a7a788, 0 0 16px 4px #818181aa inset;
+            }
+
+            50% {
+                box-shadow: 0 0 48px 16px #818181cc, 0 0 32px 8px #a7a7a788 inset;
+            }
+
+            100% {
+                box-shadow: 0 0 32px 8px #a7a7a788, 0 0 16px 4px #818181aa inset;
+            }
+        }
+
+        #textInput {
+            width: 260px;
+            height: 80px;
+            border-radius: 10px;
+            border: 2px solid #818181;
+            background: #1a1a1a;
+            color: #fff;
+            font-size: 1.1rem;
+            margin-bottom: 18px;
+            padding: 10px;
+            resize: vertical;
+            box-shadow: 0 0 12px 2px #a7a7a7cc;
+            transition: border 0.2s, box-shadow 0.2s;
+        }
+
+        #textInput:focus {
+            border: 2px solid #a7a7a7;
+            box-shadow: 0 0 24px 4px #707070bb;
+            outline: none;
+        }
+
+        #textInput.initial-text {
+            color: #a9a9a9;
+            text-shadow: 0 0 8px #a9a9a9;
+        }
+
+        button {
+            padding: 12px 28px;
+            border-radius: 8px;
+            border: none;
+            background: linear-gradient(90deg, #818181 0%, #a7a7a7 100%);
+            color: #fff;
+            font-size: 1.1rem;
+            cursor: pointer;
+            box-shadow: 0 0 16px 2px #a7a7a7cc, 0 0 0 2px #81818188;
+            text-shadow: 0 0 8px #818181, 0 0 4px #a7a7a7;
+            font-family: 'Orbitron', 'Share Tech Mono', 'Arial', sans-serif;
+            letter-spacing: 0.08em;
+            transition: background 0.2s, box-shadow 0.2s;
+        }
+
+        button:hover {
+            background: linear-gradient(90deg, #a7a7a7 0%, #818181 100%);
+            box-shadow: 0 0 32px 8px #707070cc, 0 0 0 4px #a7a7a7cc;
+        }
+
+        .input-container {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-end;
+            margin-left: 180px;
+        }
+
+        #links-overlay-header {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 18px;
+            justify-content: center;
+            align-items: center;
+            width: 100%;
+            padding: 18px 0 0 0;
+            box-sizing: border-box;
+            position: sticky;
+            top: 0;
+            z-index: 10;
+            background: rgba(22, 22, 22, 0.98);
+            border-bottom: 2px solid #818181;
+            box-shadow: 0 0 32px 4px #a7a7a744;
+            transition: opacity 0.4s;
+        }
+
+        #links-overlay-header.hide {
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        .link-card {
+            background: linear-gradient(135deg, #1a1a1a 60%, #2e2e2e 100%);
+            padding: 18px 20px;
+            border-radius: 16px;
+            box-shadow: 0 0 24px 4px #818181cc, 0 0 0 2px #a7a7a788;
+            min-width: 100px;
+            min-height: 64px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            cursor: pointer;
+            border: 2px solid #818181;
+            font-size: 1.05em;
+            position: relative;
+            overflow: hidden;
+            transition: box-shadow 0.3s, border 0.3s;
+        }
+
+        .link-card span {
+            font-size: 1.4rem !important;
+            text-shadow: 0 0 8px #818181, 0 0 4px #a7a7a7;
+        }
+
+        .link-card::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            border-radius: 16px;
+            pointer-events: none;
+            border: 2px solid transparent;
+            box-shadow: 0 0 32px 8px #a7a7a788, 0 0 16px 4px #818181aa inset;
+            animation: neon-card 2.5s linear infinite;
+        }
+
+        @keyframes neon-card {
+            0% {
+                box-shadow: 0 0 32px 8px #a7a7a788, 0 0 16px 4px #818181aa inset;
+            }
+
+            50% {
+                box-shadow: 0 0 48px 16px #818181cc, 0 0 32px 8px #a7a7a788 inset;
+            }
+
+            100% {
+                box-shadow: 0 0 32px 8px #a7a7a788, 0 0 16px 4px #818181aa inset;
+            }
+        }
+
+        .link-card:hover {
+            border: 2px solid #a7a7a7;
+            box-shadow: 0 0 48px 12px #707070cc, 0 0 0 4px #a7a7a7cc;
+        }
+
+        @media (max-width: 700px) {
+            .link-card {
+                min-width: 70px;
+                padding: 10px 4px;
+                font-size: 0.85em;
+                max-width: 38vw;
+            }
+        }
+
+        #links-overlay-feed {
+            background: linear-gradient(135deg, #1a1a1a 60%, #2e2e2e 100%);
+            border-radius: 18px;
+            box-shadow: 0 0 32px 4px #818181cc, 0 0 0 4px #a7a7a744;
+            margin-top: 18px;
+            padding: 22px 22px;
+            min-height: 80px;
+            max-width: 900px;
+            width: 90vw;
+            box-sizing: border-box;
+            max-height: 60vh;
+            overflow-y: auto;
+            border: 2px solid #818181;
+            position: relative;
+            overflow: hidden;
+        }
+
+        #links-overlay {
+            overflow: hidden;
+            border-radius: 24px;
+            box-shadow: 0 0 64px 8px #81818199, 0 0 0 6px #a7a7a7cc;
+            border: 2px solid #818181;
+            background: linear-gradient(120deg, #121212 0%, #1d1d1d 100%);
+            position: fixed;
+            animation: window-glow 3s linear infinite;
+        }
+
+        @keyframes window-glow {
+            0% {
+                box-shadow: 0 0 64px 8px #81818199, 0 0 0 6px #a7a7a7cc;
+            }
+
+            50% {
+                box-shadow: 0 0 96px 24px #a7a7a7cc, 0 0 0 12px #707070cc;
+            }
+
+            100% {
+                box-shadow: 0 0 64px 8px #81818199, 0 0 0 6px #a7a7a7cc;
+            }
+        }
+
+        #links-overlay-feed {
+            overflow-y: auto;
+            max-height: 70vh;
+        }
+
+        #toggle-header-btn {
+            position: absolute;
+            top: 32px;
+            left: 32px;
+            padding: 8px 12px;
+            border-radius: 12px;
+            border: none;
+            background: #444;
+            color: #fff;
+            font-size: 1.5rem;
+            cursor: pointer;
+            z-index: 3100;
+            display: none;
+        }
+
+        #unlock-input {
+            width: 260px;
+            height: 40px;
+            border-radius: 10px;
+            border: 2px solid #818181;
+            background: #1a1a1a;
+            color: #fff;
+            font-size: 1.1rem;
+            padding: 10px;
+            box-shadow: 0 0 12px 2px #a7a7a7cc;
+            transition: border 0.2s, box-shadow 0.2s;
+            text-align: center;
+        }
+
+        #unlock-input:focus {
+            border: 2px solid #a7a7a7;
+            box-shadow: 0 0 24px 4px #707070bb;
+            outline: none;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="splash"
+        style="position:fixed;top:0;left:0;width:100vw;height:100vh;background:#000;z-index:2000;display:flex;align-items:center;justify-content:center;">
+        <img src="gidonidy.gif" alt="Splash" style="max-width:100vw;max-height:100vh;object-fit:contain;">
+        <button id="skipSplash"
+            style="position:absolute;top:32px;right:32px;padding:8px 18px;border-radius:18px;border:none;background:#fff2;color:#fff;font-size:1rem;cursor:pointer;z-index:2100;backdrop-filter:blur(2px);">Skip</button>
+    </div>
+    <div id="unlock-container" class="unlock-container">
+        <div class="input-container">
+            <input type="password" id="unlock-input">
+        </div>
+    </div>
+    <div id="selberdoof-box"
+        style="display:none;position:fixed;top:30%;left:50%;transform:translate(-50%,-50%);background:#222;padding:32px 40px;border-radius:16px;box-shadow:0 2px 16px #000a;z-index:1000;">
+        <span style="color:#ff4444;font-size:1.5rem;font-weight:bold;">Selber Doof!</span>
+    </div>
+    <form id="sendForm" style="display:none;">
+        <textarea id="textInput" placeholder="Text eingeben...">Please put your Name!</textarea>
+        <button type="submit">Send Message</button>
+    </form>
+    <div class="background-img" id="background-img"></div>
+    <div id="links-overlay"
+        style="display:none;position:fixed;top:0;left:0;width:100vw;height:100vh;z-index:3000;align-items:center;justify-content:center;flex-direction:column;overflow:hidden;">
+        <button id="close-links-overlay"
+            style="position:absolute;top:32px;right:32px;padding:8px 18px;border-radius:18px;border:none;background:#fff2;color:#fff;font-size:1.5rem;cursor:pointer;z-index:3100;backdrop-filter:blur(2px);">✕</button>
+        <button id="toggle-header-btn">☰</button>
+        <div id="links-overlay-header"
+            style="display:flex;gap:32px;flex-wrap:wrap;justify-content:center;align-items:center;"></div>
+        <div id="links-overlay-feed" style="width:100%;max-width:900px;margin:0 auto;"></div>
+    </div>
+    <script>
+        // Definierte Texte (Base64-verschlüsselt)
+        const specificTexts = [
+            'bmFjaHJpY2h0YW5naWRvbg==',      // nachrichtangidon
+            'bmFjaHJpY2h0IGFuIGdpZG9u',      // nachricht an gidon
+            'bWVpbmVsaW5rc2dlZWRlZTEh'      // meinelinksgeedee1!
+        ];
+        const messageTriggers = [
+            'nachrichtangidon',
+            'nachricht an gidon',
+            'sendamessagetogidon',
+            'send a message to gidon',
+            'sendmessagetogidon',
+            'send message to gidon',
+            'enviarmensajagidon', // Spanisch
+            'envoyermessageagidon', // Französisch
+            '给吉登发消息', // Chinesisch
+            'שלח הודעה לגדעון' // Hebräisch
+        ];
+        function decodeBase64(str) {
+            try { return atob(str); } catch { return ''; }
+        }
+        let extraMode = false;
+        // Replace all plain-text special codes with Base64-encoded versions
+        const specialCodesBase64 = [
+            'emVpZ2VtZWluZWxpbmtzZ2VlZGVlMQ==',
+            'emVpZ2VtZWluZWxpbmtzbWFudTE=',
+            'c2hvd215bGlua3NhcnR1cjE=',
+            'c2hvd215bGlua3N0b255MQ==',
+            'emVpZ2VtZWluZWxpbmtzcGlubzE=',
+            'emVpZ2VtZWluZWxpbmtzc2FyYTE=',
+            'emVpZ2VtZWluZWxpbmtzZGF2aWQx'
+        ];
+        const extraAllowedTexts = specialCodesBase64.map(decodeBase64);
+        let doofTriggered = false;
+
+        function addExtraAllowedTextAfterDoof() {
+            if (!extraAllowedTexts.includes(decodeBase64('emVpZ2VtZWluZWxpbmtzYmVuMQ=='))) {
+                extraAllowedTexts.push(decodeBase64('emVpZ2VtZWluZWxpbmtzYmVuMQ=='));
+            }
+        }
+        let lastUnlockValue = '';
+        document.getElementById('unlock-input').addEventListener('keydown', function (e) {
+            if (e.key === 'Enter') {
+                const value = this.value.trim().toLowerCase();
+                lastUnlockValue = value;
+                this.value = ''; // Clear input immediately
+
+                if (messageTriggers.includes(value)) {
+                    document.getElementById('unlock-container').style.display = 'none';
+                    document.getElementById('sendForm').style.display = 'flex';
+                } else if (value === 'teamsmeetinggeedee1') {
+                    window.open('teams-meeting-app/index.html', '_blank');
+                } else if (extraMode && extraAllowedTexts.includes(value)) {
+                    showMainCardsOverlay();
+                } else if (extraMode && value === decodeBase64('emVpZ2VtZWluZWxpbmtzYmVuMQ==')) {
+                    showBenCardsOverlay();
+                } else if (
+                    value === 'du bist doof' ||
+                    value === 'you are stupid' ||
+                    value === 'eres estúpido' ||
+                    value === 'tu es stupide' ||
+                    value === '你很笨' ||
+                    value === 'אתה טיפש'
+                ) {
+                    const box = document.getElementById('selberdoof-box');
+                    if (value === 'you are stupid') {
+                        box.querySelector('span').textContent = 'You are stupid!';
+                    } else if (value === 'eres estúpido') {
+                        box.querySelector('span').textContent = '¡Eres estúpido!';
+                    } else if (value === 'tu es stupide') {
+                        box.querySelector('span').textContent = 'Tu es stupide !';
+                    } else if (value === '你很笨') {
+                        box.querySelector('span').textContent = '你很笨!';
+                    } else if (value === 'אתה טיפש') {
+                        box.querySelector('span').textContent = 'אתה טיפש!';
+                    } else {
+                        box.querySelector('span').textContent = 'Selber Doof!';
+                    }
+                    box.style.display = 'block';
+                    setTimeout(() => { box.style.display = 'none'; }, 2000);
+                    extraMode = true;
+                    doofTriggered = true;
+                    addExtraAllowedTextAfterDoof();
+                } else {
+                    try {
+                        const decodedValue = decodeBase64(value);
+                        if (/^zeigemeinelinks([a-z0-9]+)1$/i.test(decodedValue)) {
+                            const username = decodedValue.match(/^zeigemeinelinks([a-z0-9]+)1$/i)[1];
+                            // Username an save-user.php senden
+                            fetch('save-user.php', {
+                                method: 'POST',
+                                headers: { 'Content-Type': 'application/json' },
+                                body: JSON.stringify({ username })
+                            });
+                            showMainCardsOverlay();
+                        }
+                    } catch (e) {
+                        // Not a valid Base64 string, continue with other checks
+                    }
+                }
+            }
+        });
+        document.getElementById('sendForm').onsubmit = async (e) => {
+            e.preventDefault();
+            let text = document.getElementById('textInput').value;
+            if (!text.trim()) return;
+            text = '[GidonIdy.de] ' + text;
+            await fetch('slack-proxy.php', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ text: text })
+            });
+            // Store message in localStorage
+            let messages = [];
+            try {
+                messages = JSON.parse(localStorage.getItem('sentMessages')) || [];
+            } catch { }
+            messages.push({ text, date: new Date().toISOString() });
+            localStorage.setItem('sentMessages', JSON.stringify(messages));
+            document.getElementById('textInput').value = '';
+            setTimeout(() => {
+                document.getElementById('sendForm').style.display = 'none';
+                document.getElementById('unlock-container').style.display = '';
+            }, 1000);
+        };
+        // Show/hide background image depending on splash
+        document.getElementById('background-img').style.display = 'none';
+        let splashTimeout;
+        showSplash();
+        splashTimeout = setTimeout(hideSplash, 8000);
+        document.getElementById('skipSplash').onclick = function () {
+            clearTimeout(splashTimeout);
+            hideSplash();
+        };
+        // Overlay schließen
+        document.getElementById('close-links-overlay').onclick = function () {
+            const shadowBtn = document.querySelector('#shadow-fixed-btn');
+            if (shadowBtn) {
+                shadowBtn.remove();
+            }
+            document.getElementById('links-overlay').style.display = 'none';
+            document.getElementById('links-overlay-header').style.display = 'flex';
+            document.getElementById('toggle-header-btn').style.display = 'none';
+            document.getElementById('unlock-container').style.display = '';
+            document.getElementById('unlock-input').focus();
+            document.getElementById('background-img').style.display = '';
+        };
+
+        const header = document.getElementById('links-overlay-header');
+        const feed = document.getElementById('links-overlay-feed');
+        const toggleBtn = document.getElementById('toggle-header-btn');
+
+        toggleBtn.onclick = function () {
+            header.style.display = 'flex';
+            toggleBtn.style.display = 'none';
+            feed.innerHTML = '<div style="color:#bbb;text-align:center;margin-top:32px;">Bitte eine Kategorie oben wählen.</div>';
+        };
+
+        const david1Folders = [
+            {
+                title: 'Deutsch',
+                icon: '🇩🇪',
+                links: [
+                    { name: 'Goethe-Institut Kinderuni', description: 'Spielerisch lernen in Vorlesungen zu den Themen Mensch, Natur und Technik.', url: 'https://kinderuni.goethe.de/' },
+                    { name: 'KiKA Spiele', description: 'Kostenlose und werbefreie Online-Spiele zu vielen verschiedenen Themen.', url: 'https://www.kika.de/spiele/kinderspiele-online-kostenlos-100' },
+                    { name: 'Lernwolf - Deutsch', description: 'Kostenlose Arbeitsblätter für die 3. und 4. Klasse im Fach Deutsch.', url: 'https://www.lernwolf.de/deutsch/klasse-3-4' },
+                    { name: 'iLern.ch', description: 'Interaktive Übungen zu Sprache, Rechtschreibung und Lesen.', url: 'https://www.ilern.ch/deutsch-4-klasse/' },
+                    { name: 'Goethe: Das Bild ist weg!', description: 'Ein Online-Abenteuerspiel, um Deutsch auf A1-Niveau zu üben.', url: 'https://www.goethe.de/en/spr/ueb/los.html' }
+                ]
+            },
+            {
+                title: 'Mathematik',
+                icon: '🧮',
+                links: [
+                    { name: 'Schlaukopf – Mathe 4. Klasse', description: 'Über 17.000 interaktive und kostenlose Mathe-Aufgaben zu allen Themen der 4. Klasse.', url: 'https://www.schlaukopf.de/grundschule/klasse4/' },
+                    { name: 'Lernwolf – Mathe 4. Klasse', description: 'Kostenlose Übungsblätter zu Zahlenräumen, schriftlichem Rechnen, Maßeinheiten, Geometrie und mehr.', url: 'https://www.lernwolf.de/mathe/klasse-4' },
+                    { name: 'Math Mammoth', description: 'Werbefreie, interaktive Mathe-Spiele und Übungen für verschiedene Themen.', url: 'https://www.mathmammoth.com/practice/' }
+                ]
+            },
+            {
+                title: 'Englisch',
+                icon: '🇬🇧',
+                links: [
+                    { name: 'Schlaukopf - Englisch', description: 'Interaktive Übungen zu allen wichtigen Themen für die 4. Klasse.', url: 'https://www.schlaukopf.de/grundschule/klasse4/englisch/' },
+                    { name: 'Lernwolf - Englisch', description: 'Kostenlose Arbeitsblätter für Englisch in der Grundschule.', url: 'https://www.lernwolf.de/englisch/grundschule' },
+                    { name: 'ESL Games+', description: 'Große Auswahl an interaktiven Spielen zum Englischlernen.', url: 'https://www.eslgamesplus.com/' },
+                    { name: 'Prodigy English', description: 'Ein motivierendes, spielbasiertes Lern-Abenteuer für Englisch.', url: 'https://english.prodigygame.com/' }
+                ]
+            },
+            {
+                title: 'Sachunterricht',
+                icon: '🌍',
+                links: [
+                    { name: 'Lernwolf - Sachkunde', description: 'Kostenlose Arbeitsblätter und Übungen für den Sachunterricht.', url: 'https://www.lernwolf.de/sachkunde' },
+                    { name: 'KiKA - besser.wissen', description: 'Wissensformate und Spiele zu vielen Sachthemen.', url: 'https://www.kika.de/erwachsene/besserwissen/index.html' },
+                    { name: 'Deutscher Bildungsserver', description: 'Portal mit Materialien und Links zu vielen Sachthemen.', url: 'https://www.bildungsserver.de/schule/sachunterricht-in-der-grundschule-4310-de.html' },
+                    { name: 'Hamsterkiste', description: 'Lernportal mit Lerngeschichten zu Natur, Umwelt und mehr.', url: 'https://www.hamsterkiste.de/' }
+                ]
+            }
+        ];
+
+        function showDavidCategoryLinks(feed, folderTitle) {
+            const folder = david1Folders.find(f => f.title === folderTitle);
+            if (!folder) return;
+
+            const linksList = folder.links.map(link =>
+                `<div style="display:flex;align-items:center;gap:10px;margin:12px 0;">
+                    <span style="font-size:1.3em;">${folder.icon}</span>
+                    <a href="${link.url}" target="_blank" rel="noopener" style="color:#fff;text-decoration:underline;font-size:1.1em;">${link.name}</a>
+                    <span style="color:#bbb;font-size:0.9em;margin-left:8px;">${link.description || ''}</span>
+                </div>`
+            ).join('');
+
+            feed.innerHTML = `
+                <h2 style="color:#fff;margin-bottom:18px;">${folder.title}</h2>
+                ${linksList}
+            `;
+        }
+
+        const sara1Folders = [
+            {
+                title: 'Deutsch',
+                icon: '🇩🇪',
+                links: [
+                    { name: 'Schlaukopf - Deutsch 6. Klasse', description: 'Interaktive Übungen zu Grammatik, Rechtschreibung und Wortschatz für die 6. Klasse.', url: 'https://www.schlaukopf.de/gymnasium/klasse6/deutsch/' },
+                    { name: 'Lerntrick - Deutsch 6. Klasse', description: 'Werbefreie Lern-Apps und Online-Übungen zu Rechtschreibung und Grammatik.', url: 'https://www.lerntrick.com/uebungen/deutsch/6-klasse/' },
+                    { name: 'Deutsch.info', description: 'Kostenlose Online-Kurse, Grammatik-Erklärungen und interaktive Übungen.', url: 'https://deutsch.info/' },
+                    { name: 'VHS-Lernportal - Deutsch', description: 'Kostenlose Online-Deutschkurse für die Niveaus A1-C1 mit Tutor-Begleitung.', url: 'https://www.vhs-lernportal.de/wws/home.php' },
+                    { name: 'Planet Schule - Deutsch', description: 'Lerninhalte, Filme und Materialien für den Deutschunterricht.', url: 'https://www.planet-schule.de/fach/deutsch-102.html' }
+                ]
+            },
+            {
+                title: 'Mathematik',
+                icon: '🧮',
+                links: [
+                    { name: 'Schlaukopf – Mathe 6. Klasse', description: 'Kostenlose, interaktive Übungen zu Brüchen, Dezimalzahlen, Geometrie und mehr.', url: 'https://www.schlaukopf.de/gymnasium/klasse6/mathematik/' },
+                    { name: 'WWOLT - Mathe 6. Klasse', description: 'Online-Mathe-Praxis, die sich am CBSE-Lehrplan für die 6. Klasse orientiert.', url: 'https://wwolt.com/math/grade-6' },
+                    { name: 'Math-Only-Math', description: 'Übungsaufgaben zu ganzen Zahlen, Brüchen, Algebra und anderen Themen der 6. Klasse.', url: 'https://www.math-only-math.com/6th-Grade-Math-Practice.html' },
+                    { name: 'Sofatutor - Mathe 6. Klasse', description: 'Lernvideos und Übungen zu allen wichtigen Mathe-Themen der 6. Klasse.', url: 'https://www.sofatutor.com/mathematik/klasse-6' },
+                    { name: 'Matheaufgaben.net', description: 'Große Sammlung an Arbeitsblättern und Online-Übungen für die 6. Klasse.', url: 'https://www.matheaufgaben.net/mathe-online-uebungen/klasse-6/' }
+                ]
+            },
+            {
+                title: 'Englisch',
+                icon: '🇬🇧',
+                links: [
+                    { name: 'Wordgametime - 6th Grade', description: 'Wortspiele, Videos und Arbeitsblätter zur Verbesserung der Sprachkenntnisse.', url: 'https://www.wordgametime.com/grade/6th-grade' },
+                    { name: 'Room Recess - English Games', description: 'Sammlung von Lese- und Wortspielen für die Klassen 4-6.', url: 'https://www.roomrecess.com/pages/45.html' },
+                    { name: 'Prodigy English', description: 'Ein motivierendes, spielbasiertes Lern-Abenteuer für Englisch.', url: 'https://english.prodigygame.com/' },
+                    { name: 'ESL Games+', description: 'Große Auswahl an interaktiven Spielen zum Englischlernen für verschiedene Niveaus.', url: 'https://www.eslgamesplus.com/' },
+                    { name: 'Super Grammar Ninja', description: 'Ein lustiges Spiel zum Üben von Wortarten und Satzbau.', url: 'https://ereadinggames.com/super-grammar-ninja/' }
+                ]
+            },
+            {
+                title: 'Natur & Welt',
+                icon: '🌍',
+                links: [
+                    { name: 'Schlaukopf - Biologie 6. Klasse', description: 'Übungen zu Pflanzen, Tieren und dem menschlichen Körper.', url: 'https://www.schlaukopf.de/gymnasium/klasse6/biologie/' },
+                    { name: 'Planet Schule - Geographie', description: 'Filme und Lernmaterialien zu Klima, Natur und den Kontinenten.', url: 'https://www.planet-schule.de/fach/geographie-100.html' },
+                    { name: 'Planet Schule - Geschichte', description: 'Zeitreisen von der Steinzeit bis zur Weimarer Republik.', url: 'https://www.planet-schule.de/fach/geschichte-104.html' },
+                    { name: 'History Skills', description: 'Kostenlose, herunterladbare Geschichtslektionen für verschiedene Klassenstufen.', url: 'https://www.historyskills.com/classroom' },
+                    { name: 'Geo4u', description: 'Geografie-Grundlagen und Wissenswertes über Natur und Tierwelt.', url: 'https://www.geo4u.net/' }
+                ]
+            }
+        ];
+
+        function showSaraCategoryLinks(feed, folderTitle) {
+            const folder = sara1Folders.find(f => f.title === folderTitle);
+            if (!folder) return;
+
+            const linksList = folder.links.map(link =>
+                `<div style="display:flex;align-items:center;gap:10px;margin:12px 0;">
+                    <span style="font-size:1.3em;">${folder.icon}</span>
+                    <a href="${link.url}" target="_blank" rel="noopener" style="color:#fff;text-decoration:underline;font-size:1.1em;">${link.name}</a>
+                    <span style="color:#bbb;font-size:0.9em;margin-left:8px;">${link.description || ''}</span>
+                </div>`
+            ).join('');
+
+            feed.innerHTML = `
+                <button id="back-to-sara" style="float:right;margin-bottom:18px;margin-left:18px;padding:8px 18px;border-radius:8px;border:none;background:#818181;color:#fff;font-size:1rem;cursor:pointer;">Zurück</button>
+                <h2 style="color:#fff;margin-bottom:18px;">${folder.title}</h2>
+                ${linksList}
+            `;
+            document.getElementById('back-to-sara').onclick = function () {
+                const header = document.getElementById('links-overlay-header');
+                const feed = document.getElementById('links-overlay-feed');
+                const toggleBtn = document.getElementById('toggle-header-btn');
+                header.style.display = 'flex';
+                toggleBtn.style.display = 'none';
+                feed.innerHTML = '<div style="color:#bbb;text-align:center;margin-top:32px;">Bitte eine Kategorie oben wählen.</div>';
+            };
+        }
+
+        // EBV-Links für das Overlay
+        const ebvLinks = [
+            {
+                title: 'Tools',
+                icon: '🛠️',
+                links: [
+                    { name: 'DALL-E', description: 'OpenAI\'s AI system for generating images from text', url: 'https://labs.openai.com/', icon: '🖼️' },
+                    { name: 'Midjourney', description: 'Discord-based AI art generator with unique style', url: 'https://www.midjourney.com/', icon: '🎨' },
+                    { name: 'Smithsonian', description: 'Open access platform for historical and cultural image collections', url: 'https://www.si.edu/openaccess', icon: '🌐' },
+                    { name: '3D Gif Maker', description: 'Create 3D animated GIFs from multiple images or video frames', url: 'https://www.3dgifmaker.com/', icon: '🖼️' },
+                    { name: 'Pixlr E', description: 'Professional online photo editor with advanced features and layers', url: 'https://pixlr.com/e/#editor', icon: '🖌️' },
+                    { name: 'Pixabay Photo', description: 'Free high-quality stock photos and images library', url: 'https://pixabay.com/photos/photography-lifestyle-experimental-731891/', icon: '📷' },
+                    { name: 'EZGIF', description: 'Comprehensive online GIF editor and image converter', url: 'https://ezgif.com/', icon: '🎞️' },
+                    { name: 'Free GIFs', description: 'Collection of free animated GIFs for creative projects', url: 'https://www.motionelements.com/free/gifs', icon: '🆓' },
+                    { name: 'cm in pixel', description: 'Convert centimeters to pixels for precise image sizing', url: 'https://www.koethen.de/verlagshersteller/rechner/umrechnung-cm-in-pixel.html', icon: '📏' },
+                    { name: 'CleanPNG', description: 'Database of transparent PNG images with clean backgrounds', url: 'https://www.cleanpng.com/', icon: '🖼️' },
+                    { name: 'WordClouds', description: 'Create customizable word clouds from text input', url: 'https://www.wordclouds.com/', icon: '☁️' },
+                    { name: 'Free Stock Video', description: 'High-quality free stock videos and motion graphics', url: 'https://coverr.co/', icon: '🎬' },
+                    { name: 'Gemini', description: 'Integrated with Google, photorealistic quality, easy to use with Google account.', url: 'https://gemini.google.com/', icon: '🔮' },
+                    { name: 'FLUX.1 Schnell', description: 'Open-source, high-quality AI image generation model, free for technical users.', url: 'https://flux1.ai/', icon: '⚡' },
+                    { name: 'GIMP', description: 'Advanced open-source photo editor with features rivaling Photoshop, supports layers and plugins.', url: 'https://www.gimp.org/', icon: '🖌️' },
+                    { name: 'Photopea', description: 'Free online Photoshop alternative, supports PSD and many formats, no installation needed.', url: 'https://www.photopea.com/', icon: '🖼️' },
+                    { name: 'Pixlr', description: 'Browser-based editor with AI tools, background removal, and quick enhancements, free tier available.', url: 'https://pixlr.com/', icon: '🖌️' },
+                    { name: 'MyEdit', description: 'Free online AI photo editor, offers image upscaling, cartoon effects, background removal, and more.', url: 'https://myedit.online/', icon: '✨' },
+                    { name: 'Canva Photo Editor', description: 'Free online editor with AI features, supports basic and creative edits, includes a limited free tier.', url: 'https://www.canva.com/photo-editor/', icon: '🎨' },
+                    { name: 'Paint.NET', description: 'Free, user-friendly Windows editor with layer support and plugin ecosystem.', url: 'https://www.getpaint.net/', icon: '🖌️' },
+                    { name: 'RawTherapee', description: 'Advanced free RAW photo processor, ideal for photographers, supports extensive camera formats.', url: 'https://rawtherapee.com/', icon: '📷' },
+                    { name: 'Ideogram', description: 'AI image generation with a focus on typography.', url: 'https://ideogram.ai/', icon: '🖼️' },
+                    { name: 'Playground', description: 'AI image creator and editor.', url: 'https://playground.com/', icon: '🎨' },
+                    { name: 'Leonardo AI', description: 'Platform for creating assets for games and other projects with AI.', url: 'https://leonardo.ai/', icon: '🤖' }
+                ]
+            },
+            {
+                title: 'AI Video Tools',
+                icon: '🎥',
+                links: [
+                    { name: 'Minimax', description: 'AI-powered video generation platform with advanced features', url: 'https://minimax.chat/', icon: '🤖' },
+                    { name: 'Runway Gen-4', description: 'AI video generation model with cinematic quality and real-time rendering', url: 'https://research.runwayml.com/gen4', icon: '🎥' },
+                    { name: 'Pika 2.2', description: 'AI video generation model with high-quality results and customizable styles', url: 'https://pika.art/', icon: '🌟' },
+                    { name: 'Sora', description: 'AI video generation platform with a focus on enterprise use cases', url: 'https://sora.com/', icon: '💼' },
+                    { name: 'Kling AI', description: 'AI video generation platform with a focus on meme creation', url: 'https://kling.ai/', icon: '😜' },
+                    { name: 'Adobe Firefly', description: 'AI video generation model integrated into Adobe Creative Cloud', url: 'https://www.adobe.com/sensei/generative-ai/firefly.html', icon: '🌐' },
+                    { name: 'Vidu', description: 'AI video generation platform with a focus on enterprise use cases', url: 'https://vidu.ai/', icon: '💼' },
+                    { name: 'Luma AI', description: 'AI video generation platform with a focus on cinematic quality', url: 'https://luma.ai/', icon: '🎥' },
+                    { name: 'Enhancor AI', description: 'AI video editor and enhancement tool', url: 'https://app.enhancor.ai/editor', icon: '🎞️' },
+                    { name: 'ComfyUI', description: 'A powerful and modular stable diffusion GUI.', url: 'https://github.com/comfyanonymous/ComfyUI', icon: '🎨' },
+                    { name: 'Pictory', description: 'AI video creator for marketing and social media.', url: 'https://pictory.ai/', icon: '🎥' },
+                    { name: 'InVideo', description: 'Online video editor with AI-powered tools.', url: 'https://invideo.io/', icon: '🎬' },
+                    { name: 'Lumen5', description: 'AI-powered platform for creating videos from text.', url: 'https://lumen5.com/', icon: '📖' },
+                    { name: 'CapCut', description: 'Free all-in-one video editor for everyone.', url: 'https://www.capcut.com/', icon: '✂️' },
+                    { name: 'Wisecut', description: 'AI video editor that automatically edits videos for you.', url: 'https://www.wisecut.video/', icon: '🧠' },
+                    { name: 'VEED.IO', description: 'Online video suite for professionals.', url: 'https://www.veed.io/', icon: '📹' }
+                ]
+            },
+            {
+                title: 'Music / Sound',
+                icon: '🎵',
+                links: [
+                    { name: 'Suno', description: 'Create music with AI', url: 'https://www.suno.ai/', icon: '🎵' },
+                    { name: 'Artlist', description: 'Royalty-free music and sound effects for creators.', url: 'https://artlist.io/', icon: '🎶' },
+                    { name: 'Playht', description: 'AI-powered text-to-voice generation.', url: 'https://play.ht/', icon: '🗣️' },
+                    { name: 'ElevenLabs', description: 'AI voice generator for lifelike text-to-speech.', url: 'https://elevenlabs.io/', icon: '🎤' },
+                    { name: 'LOVO', description: 'AI voice generator and text-to-speech platform.', url: 'https://lovo.ai/', icon: '🤖' },
+                    { name: 'Soundify', description: 'AI-powered music creation platform.', url: 'https://soundify.io/', icon: '🎧' },
+                    { name: 'Audiobox', description: 'Meta\'s new foundation research model for audio generation.', url: 'https://ai.meta.com/blog/audiobox-generating-audio-voice-sound-effects-music-ai/', icon: '📦' },
+                    { name: 'HeyGen', description: 'AI video platform with voice cloning and translation.', url: 'https://www.heygen.com/', icon: '📹' },
+                    { name: 'Voxqube', description: 'AI-powered dubbing and voice-over services.', url: 'https://voxqube.com/', icon: '🌐' },
+                    { name: 'Dubbverse', description: 'AI dubbing for video content.', url: 'https://www.dubbverse.com/', icon: '🎥' },
+                    { name: 'Udio', description: 'AI music generation tool.', url: 'https://www.udio.com/', icon: '🎵' },
+                    { name: 'Soundraw', description: 'AI music generator for creators.', url: 'https://soundraw.io/', icon: '🎼' }
+                ]
+            }
+        ];
+        // CySec tools content
+        const cysecTools = [
+            {
+                title: 'Security Tools',
+                icon: '🔒',
+                links: [
+                    { name: 'Deep Instinct Console', description: 'Prevention-first security platform with deep learning', url: 'https://portal.deepinstinct.com/' },
+                    { name: 'Cortex XDR', description: 'Extended detection and response platform', url: 'https://cortex-gateway.paloaltonetworks.com/' },
+                    { name: 'Wazuh', description: 'Next-gen XDR and SIEM platform for threat detection and response', url: 'https://wazuh.com/' },
+                    { name: 'CrowdSec', description: 'Community-driven CTI and security automation platform', url: 'https://www.crowdsec.net/' },
+                    { name: 'Falco', description: 'Cloud-native runtime security with modern container monitoring', url: 'https://falco.org/' },
+                    { name: 'Tracee', description: 'Linux runtime security and forensics using eBPF', url: 'https://tracee.io/' },
+                    { name: 'Nuclei', description: 'Fast vulnerability scanner with extensive template library', url: 'https://nuclei.projectdiscovery.io/' },
+                    { name: 'Trivy', description: 'Comprehensive security scanner for containers and infrastructure', url: 'https://trivy.dev/' },
+                    { name: 'Ciphercat', description: 'AI-powered security assessment and hardening tool', url: 'https://github.com/ciphercat' },
+                    { name: 'DefectDojo', description: 'Security orchestration and vulnerability management', url: 'https://www.defectdojo.org/' },
+                    { name: 'Prowler', description: 'Cloud security assessment and compliance tool', url: 'https://prowler.pro/' },
+                    { name: 'Semgrep', description: 'Static analysis engine for finding code security issues', url: 'https://semgrep.dev/' }
+                ]
+            },
+            {
+                title: 'Monitoring',
+                icon: '📊',
+                links: [
+                    { name: 'Datadog AI', description: 'AI-powered observability platform with predictive analytics and anomaly detection', url: 'https://www.datadoghq.com/product/ai/' },
+                    { name: 'Dynatrace Davis AI', description: 'Autonomous cloud monitoring with causation-based AI', url: 'https://www.dynatrace.com/platform/artificial-intelligence/' },
+                    { name: 'New Relic AI Ops', description: 'Full-stack observability with AI-driven incident prediction', url: 'https://newrelic.com/platform/ai' },
+                    { name: 'Splunk AI Assistant', description: 'AI-enhanced security monitoring and log analysis', url: 'https://www.splunk.com/en_us/products/ai-ml.html' },
+                    { name: 'AppDynamics Cloud AI', description: 'Cloud-native application performance monitoring with AI insights', url: 'https://www.appdynamics.com/cloud' },
+                    { name: 'Elastic AI Assistant', description: 'AI-powered search and analytics for observability data', url: 'https://www.elastic.co/guide/en/kibana/current/xpack-ml.html' },
+                    { name: 'SolarWinds AI', description: 'Network and infrastructure monitoring with AI optimization', url: 'https://www.solarwinds.com/ai-ml' },
+                    { name: 'LogicMonitor LM Intelligence', description: 'AIOps platform for automated infrastructure monitoring', url: 'https://www.logicmonitor.com/platform/ai' },
+                    { name: 'Grafana Cloud AI', description: 'AI-enhanced metrics, logs, and traces visualization', url: 'https://grafana.com/products/cloud/' },
+                    { name: 'Prometheus AI Toolkit', description: 'Open-source monitoring with AI-powered alerting', url: 'https://prometheus.io/' }
+                ]
+            }
+        ];
+        // progFolders ist jetzt leer
+        const progFolders = [
+            {
+                title: 'AI Coding Tools',
+                icon: '💻',
+                links: [
+                    { name: 'Qodo', description: 'Advanced AI code assistant with test generation and smart code suggestions', url: 'https://qodo.dev/' },
+                    { name: 'GitHub Copilot', description: 'AI pair programmer that suggests code completions and whole functions', url: 'https://github.com/features/copilot' },
+                    { name: 'Tabnine', description: 'AI code completion tool with strong privacy and offline capabilities', url: 'https://www.tabnine.com/' },
+                    { name: 'Windsurf', description: 'Fast AI code assistant supporting over 70 programming languages', url: 'https://windsurf.ai/' },
+                    { name: 'Cursor', description: 'AI-powered code editor with integrated GPT-4 capabilities', url: 'https://www.cursor.so/' },
+                    { name: 'Copilot Workspace', description: 'GitHub\'s AI-powered development environment for teams', url: 'https://githubnext.com/projects/copilot-workspace/' },
+                    { name: 'AskCodi', description: 'AI coding assistant for code generation and debugging', url: 'https://www.askcodi.com/' },
+                    { name: 'Codiga', description: 'Code analysis and automation platform with AI capabilities', url: 'https://www.codiga.io/' },
+                    { name: 'Visual Studio Code', description: 'Popular code editor with extensive plugin ecosystem', url: 'https://code.visualstudio.com/' },
+                    { name: 'OpenAI Codex', description: 'AI system that translates natural language to code', url: 'https://openai.com/research/publications/codex' },
+                    { name: 'CopyAI', description: 'AI-powered copywriter for marketing and sales content', url: 'https://www.copy.ai/' },
+                    { name: 'Writesonic', description: 'AI writing assistant for creating SEO-friendly content', url: 'https://writesonic.com/' },
+                    { name: 'GravityWrite', description: 'AI content creation suite for various writing tasks', url: 'https://gravitywrite.com/' },
+                    { name: 'Cody', description: 'AI coding assistant by Sourcegraph.', url: 'https://sourcegraph.com/cody' },
+                    { name: 'CodeGeeX', description: 'A multilingual code generation model.', url: 'https://codegeex.cn/' },
+                    { name: 'Blackbox AI', description: 'AI-powered code generation and code chat.', url: 'https://www.blackbox.ai/' }
+                ]
+            },
+            {
+                title: 'AI Tools',
+                icon: '🤖',
+                links: [
+                    { name: 'ChatGPT', description: 'OpenAI\'s conversational AI for text generation and problem-solving', url: 'https://chat.openai.com/', icon: '💬' },
+                    { name: 'Claude', description: 'Anthropic\'s AI assistant known for detailed analysis', url: 'https://claude.ai/', icon: '🧠' },
+                    { name: 'Stable Diffusion', description: 'Open-source AI image generation model', url: 'https://stability.ai/', icon: '🎭' },
+                    { name: 'Hugging Face', description: 'Platform for sharing and using ML models', url: 'https://huggingface.co/', icon: '🤗' },
+                    { name: 'RunwayML', description: 'AI-powered creative tools for content creation', url: 'https://runwayml.com/', icon: '🎬' },
+                    { name: 'Anthropic', description: 'AI research company focused on safe AI systems', url: 'https://www.anthropic.com/', icon: '🌟' },
+                    { name: 'Replicate', description: 'Platform for running AI models in the cloud', url: 'https://replicate.com/', icon: '🔄' },
+                    { name: 'Perplexity AI', description: 'AI-powered search engine with real-time answers', url: 'https://www.perplexity.ai/', icon: '🔍' }
+                ]
+            }
+        ];
+        // aiFolders enthält alle bisherigen PROG-Inhalte
+        const aiFolders = [
+            {
+                title: 'apikeys', icon: '🔑', links: [
+                    { name: 'OpenAI API Keys', description: 'Manage API keys for OpenAI services and models', url: 'https://platform.openai.com/settings/organization/api-keys' },
+                    { name: 'DeepSeek Keys', description: 'API key management for DeepSeek AI platform', url: 'https://platform.deepseek.com/api_keys' },
+                    { name: 'Google API Keys', description: 'Access and manage Google Cloud API credentials', url: 'https://console.cloud.google.com/apis/credentials?inv=1&invt=AbyffA&project=course1-460918' },
+                    { name: 'Google AI Studio', description: 'API key management for Google AI services', url: 'https://aistudio.google.com/app/apikey' },
+                    { name: 'Airtable Tokens', description: 'Personal access token management for Airtable', url: 'https://airtable.com/create/tokens' },
+                    { name: 'Pinecone', description: 'Vector database API key management', url: 'https://app.pinecone.io/organizations/-ORIExkVNkqi1tb7bq54/projects/1a18d596-3705-422b-9a58-c03dacca6ed2/get-started/database' },
+                    { name: 'Anthropic Console', description: 'API key management for Claude and other Anthropic services', url: 'https://console.anthropic.com/settings/keys' },
+                    { name: 'Firecrawl', description: 'API key management for web crawling service', url: 'https://www.firecrawl.dev/app/api-keys' },
+                    { name: 'CoinGecko', description: 'API access management for cryptocurrency data', url: 'https://www.coingecko.com/en/api/pricing' },
+                    { name: 'Github Tokens', description: 'Personal access token management for GitHub', url: 'https://github.com/settings/tokens' }
+                ]
+            },
+            {
+                title: 'billing', icon: '💳', links: [
+                    { name: 'DeepSeek Usage', description: 'Monitor and manage DeepSeek platform usage and costs', url: 'https://platform.deepseek.com/usage' },
+                    { name: 'OpenAI Billing', description: 'Track and manage OpenAI service usage and billing', url: 'https://platform.openai.com/settings/organization/billing/overview' },
+                    { name: 'Cursor', description: 'Manage Cursor IDE subscription and billing', url: 'https://www.cursor.com/dashboard' }
+                ]
+            },
+            {
+                title: 'consoles', icon: '🖥️', links: [
+                    { name: 'GroqCloud', description: 'Cloud console for Groq AI infrastructure', url: 'https://console.groq.com/home' },
+                    { name: 'DeepSeek Usage', description: 'Monitor DeepSeek platform usage and metrics', url: 'https://platform.deepseek.com/usage' },
+                    { name: 'OpenAI Docs', description: 'Official documentation for OpenAI APIs and models', url: 'https://platform.openai.com/docs/overview' },
+                    { name: 'Google Cloud', description: 'Main console for Google Cloud services', url: 'https://console.cloud.google.com/welcome/new?inv=1&invt=AbyffA&project=course1-460918' },
+                    { name: 'Google AI Chat', description: 'Interactive console for Google AI services', url: 'https://aistudio.google.com/prompts/new_chat' },
+                    { name: 'Firecrawl Signin', description: 'Authentication portal for Firecrawl services', url: 'https://www.firecrawl.dev/signin' },
+                    { name: 'Firecrawl Playground', description: 'Testing environment for web crawling features', url: 'https://www.firecrawl.dev/playground?mode=extract' },
+                    { name: 'Meta Business', description: 'Business management console for Meta platforms', url: 'https://business.facebook.com/latest/settings/apps?business_id=1042982970743363' },
+                    { name: 'Anthropic Console', description: 'Main dashboard for Anthropic AI services', url: 'https://console.anthropic.com/dashboard' },
+                    { name: 'NotebookLM', description: 'Google AI notebook for language model experiments', url: 'https://notebooklm.google.com/notebook/b206c149-bab2-497f-8388-15366be5f715' },
+                    { name: 'Google Cloud', description: 'Cloud platform services and management', url: 'https://cloud.google.com/' },
+                    { name: 'AWS S3', description: 'Amazon S3 cloud storage management console', url: 'https://us-east-1.console.aws.amazon.com/s3/home?region=us-east-1' },
+                    { name: 'ChatGPT', description: 'Web interface for OpenAI ChatGPT models', url: 'https://chat.openai.com/' },
+                    { name: 'Github main', description: 'Main GitHub repository access', url: 'https://github.com/' }
+                ]
+            },
+            {
+                title: 'database', icon: '📊', links: [
+                    { name: 'Airtable', description: 'No-code database and workspace platform', url: 'https://airtable.com/' },
+                    { name: 'Chroma Docs', description: 'Documentation for Chroma vector database', url: 'https://docs.trychroma.com/docs/overview/getting-started' }
+                ]
+            },
+            {
+                title: 'Resources', icon: '📁', links: [
+                    { name: 'AI Agent Templates', description: 'Collection of templates for AI agent development', url: 'https://drive.google.com/drive/folders/1ZUtzTmvumRkHCwA-rtKrBOTq3rbFtk8C' },
+                    { name: 'Claude Opus 4', description: 'Workflow automation templates for Claude Opus', url: 'https://johanneskofler.notion.site/Claude-Opus-4-Workflow-Automatisierungstemplates-200b87a22ecb80fba16fcb6879e5b087' }
+                ]
+            },
+            {
+                title: 'workflows',
+                icon: '🔄',
+                links: [
+                    { name: 'n8n AI Text Generation', description: 'Automated workflow for content creation using GPT models', url: 'https://n8n.io/workflows/1234-ai-text-generation' },
+                    { name: 'n8n Image Processing', description: 'Automated image generation and editing with DALL-E and Stable Diffusion', url: 'https://n8n.io/workflows/1235-ai-image-processing' },
+                    { name: 'n8n ChatGPT Assistant', description: 'Custom chatbot creation and deployment workflow', url: 'https://n8n.io/workflows/1236-chatgpt-assistant' },
+                    { name: 'n8n Data Analysis', description: 'AI-powered data processing and visualization pipeline', url: 'https://n8n.io/workflows/1237-ai-data-analysis' },
+                    { name: 'n8n Document Processing', description: 'Automated document parsing and analysis with AI', url: 'https://n8n.io/workflows/1238-document-processing' },
+                    { name: 'n8n Voice Recognition', description: 'Speech-to-text and voice command automation', url: 'https://n8n.io/workflows/1239-voice-recognition' },
+                    { name: 'n8n Sentiment Analysis', description: 'Social media and customer feedback analysis workflow', url: 'https://n8n.io/workflows/1240-sentiment-analysis' },
+                    { name: 'n8n Code Generation', description: 'Automated code creation and documentation with AI', url: 'https://n8n.io/workflows/1241-code-generation' },
+                    { name: 'n8n Translation', description: 'Multi-language content translation automation', url: 'https://n8n.io/workflows/1242-ai-translation' },
+                    { name: 'n8n AI Training', description: 'Custom AI model training and deployment workflow', url: 'https://n8n.io/workflows/1243-ai-training' }
+                ]
+            },
+            {
+                title: 'MCP Servers',
+                icon: '🖥️',
+                links: [
+                    { name: 'Cursor MCP', description: 'Multi-agent coordination platform for Cursor IDE', url: 'https://cursor.directory/mcp' }
+                ]
+            },
+            {
+                title: 'OpenRouter',
+                icon: '🔗',
+                links: [
+                    { name: 'OpenRouter', description: 'API gateway for accessing multiple AI models through a single endpoint', url: 'https://openrouter.ai/' }
+                ]
+            },
+            {
+                title: 'Prompting',
+                icon: '✍️',
+                links: [
+                    { name: 'Playbooks', description: 'Community and resources for building apps with AI tools, including tutorials and example prompts.', url: 'https://playbooks.com/' },
+                    { name: 'Anthropic\'s Claude 3 Prompt Library', description: 'Curated prompts designed to make the most of Claude 3 AI, covering a range of use cases.', url: 'https://docs.anthropic.com/en/resources/prompt-library/library' },
+                    { name: 'AIPRM', description: 'Chrome extension and web tool providing a library of curated prompts for ChatGPT and similar AI models.', url: 'https://www.aiprm.com/' },
+                    { name: 'PromptHero', description: 'Known for its extensive collection of free AI image prompts, with options for text prompts as well.', url: 'https://prompthero.com/' },
+                    { name: 'Awesome ChatGPT Prompts', description: 'A GitHub-hosted library with prompts to help users maximize productivity with ChatGPT.', url: 'https://github.com/f/awesome-chatgpt-prompts' },
+                    { name: 'PromptBase', description: 'Marketplace for buying and selling high-quality AI prompts, including those for DALL-E and GPT-3.', url: 'https://promptbase.com/' },
+                    { name: 'Microsoft Learn Prompt Library', description: 'Offers a wide selection of pre-built prompts for Microsoft AI Builder, covering document processing and content generation.', url: 'https://learn.microsoft.com/en-us/ai-builder/prompt-library' },
+                    { name: 'Promptech', description: 'Platform for creating, testing, and refining prompts with feedback metrics and collaboration features.', url: 'https://promptech.ai/' },
+                    { name: 'Prompting Guide', description: 'Open-source tool for structuring and controlling outputs from large language models using advanced prompt engineering.', url: 'https://www.promptingguide.ai/' },
+                    { name: 'LangChain', description: 'Framework for building applications with multi-step reasoning and customizable prompts.', url: 'https://www.langchain.com/' },
+                    { name: 'PromptLayer', description: 'Platform for prompt versioning, testing, monitoring, and analytics, suitable for both technical and non-technical users.', url: 'https://promptlayer.com/' },
+                    { name: 'Webvizio Free AI Prompt Generator', description: 'Specialized generator for web development, producing actionable prompts for coding and bug fixing.', url: 'https://webvizio.com/free-ai-prompt-generator/' },
+                    { name: 'FeeDough Prompt Generator', description: 'Generates prompts for multiple AI platforms, supporting text, image, and reasoning tasks.', url: 'https://www.feedough.com/ai-prompt-generator/' },
+                    { name: 'WebUtility ChatGPT Prompt Generator', description: 'Helps create effective prompts for ChatGPT with tone customization and task-specific options.', url: 'https://webutility.io/chatgpt-prompt-generator' },
+                    { name: 'Reliablesoft Prompt Generator', description: 'Creates well-structured prompts for ChatGPT, CoPilot, and Gemini, with customization and cross-platform support.', url: 'https://www.reliablesoft.net/ai-text-generator-tools/prompt-generator/' }
+                ]
+            }
+        ];
+        // LEARN-Kategorien und Links aus bookmarks3.html
+        const learnFolders = [
+            {
+                title: 'AWS',
+                icon: '☁️',
+                subfolders: [
+                    {
+                        title: 'Certifications',
+                        icon: '🎓',
+                        links: [
+                            { name: 'AWS Certified Cloud Practitioner', description: 'Entry-level certification for AWS cloud understanding', url: 'https://aws.amazon.com/certification/certified-cloud-practitioner/' },
+                            { name: 'AWS Solutions Architect Associate', description: 'Associate level certification for architecture', url: 'https://aws.amazon.com/certification/certified-solutions-architect-associate/' },
+                            { name: 'AWS Developer Associate', description: 'Associate level certification for developers', url: 'https://aws.amazon.com/certification/certified-developer-associate/' },
+                            { name: 'AWS SysOps Administrator', description: 'Associate level certification for system operations', url: 'https://aws.amazon.com/certification/certified-sysops-admin-associate/' }
+                        ]
+                    },
+                    {
+                        title: 'Learning Resources',
+                        icon: '📚',
+                        links: [
+                            { name: 'AWS Skill Builder', description: 'Official AWS learning platform with free digital courses', url: 'https://explore.skillbuilder.aws/' },
+                            { name: 'AWS Documentation', description: 'Comprehensive documentation for all AWS services', url: 'https://docs.aws.amazon.com/' },
+                            { name: 'AWS Training', description: 'Official AWS training and certification portal', url: 'https://aws.amazon.com/training/' },
+                            { name: 'AWS Workshops', description: 'Hands-on tutorials for AWS services', url: 'https://workshops.aws/' }
+                        ]
+                    },
+                    {
+                        title: 'Specialty Paths',
+                        icon: '🎯',
+                        links: [
+                            { name: 'Machine Learning', description: 'AWS certification for machine learning specialty', url: 'https://aws.amazon.com/certification/certified-machine-learning-specialty/' },
+                            { name: 'Security', description: 'AWS certification for security specialty', url: 'https://aws.amazon.com/certification/certified-security-specialty/' },
+                            { name: 'Data Analytics', description: 'AWS certification for data analytics specialty', url: 'https://aws.amazon.com/certification/certified-data-analytics-specialty/' },
+                            { name: 'Database', description: 'AWS certification for database specialty', url: 'https://aws.amazon.com/certification/certified-database-specialty/' }
+                        ]
+                    }
+                ]
+            },
+            {
+                title: 'Azure',
+                icon: '☁️',
+                subfolders: [
+                    {
+                        title: 'Azure Learning',
+                        icon: '📚',
+                        links: [
+                            { name: 'Azure Architecture Center', description: 'Comprehensive guide to Azure architecture patterns and best practices', url: 'https://docs.microsoft.com/en-us/azure/architecture/' },
+                            { name: 'GitHub - MicrosoftLearning/AZ-304-Microsoft-Azure-Architect-Design', description: 'Official learning materials and labs for Azure Architect certification', url: 'https://github.com/MicrosoftLearning/AZ-304-Microsoft-Azure-Architect-Design' },
+                            { name: 'Exam AZ-304: Microsoft Azure Architect Design', description: 'Official exam details, requirements, and study resources', url: 'https://docs.microsoft.com/en-us/learn/certifications/exams/az-304' }
+                        ]
+                    },
+                    {
+                        title: 'cost calculators',
+                        icon: '💸',
+                        links: [
+                            { name: 'Pricing Calculator | Microsoft Azure', description: 'Interactive tool to estimate costs for Azure services and infrastructure', url: 'https://azure.microsoft.com/en-us/pricing/calculator/' },
+                            { name: 'Total Cost of Ownership (TCO) Calculator | Microsoft Azure', description: 'Compare on-premises vs Azure cloud infrastructure costs', url: 'https://azure.microsoft.com/en-us/pricing/tco/calculator/' }
+                        ]
+                    },
+                    {
+                        title: 'Cloud Arschiteckt',
+                        icon: '☁️',
+                        links: [
+                            { name: 'Azure documentation | Microsoft Docs', description: 'Complete documentation for all Azure services and features', url: 'https://docs.microsoft.com/en-us/azure/?product=featured' },
+                            { name: 'When to use Azure Container Instances or Azure Kubernetes Service', description: 'Decision guide for choosing the right container solution', url: 'https://docs.microsoft.com/en-us/learn/modules/azure-compute-fundamentals/azure-container-services' },
+                            { name: 'Azure This Week - A Cloud Guru', description: 'Weekly updates and insights about Azure services and features', url: 'https://acloud.guru/series/azure-this-week' },
+                            { name: 'Azure DevOps Hands-On Labs', description: 'Interactive labs for learning Azure DevOps practices', url: 'https://azuredevopslabs.com/' },
+                            { name: 'Exam MS-102: Microsoft 365 Administrator (beta)', description: 'Preparation guide for Microsoft 365 admin certification', url: 'https://learn.microsoft.com/en-us/certifications/exams/ms-102/' },
+                            { name: 'Azure Quickstart Templates', description: 'Collection of ARM templates for rapid Azure deployment', url: 'https://azure.microsoft.com/en-us/resources/templates/' },
+                            { name: 'The Twelve-Factor App', description: 'Best practices for building modern cloud applications', url: 'https://12factor.net/' },
+                            { name: 'Home - DevOps.com', description: 'Latest news and resources for DevOps practices', url: 'https://devops.com/' },
+                            { name: 'IT Revolution', description: 'Digital transformation and DevOps culture insights', url: 'https://itrevolution.com/' },
+                            { name: 'Attention Required! | Cloudflare', description: 'DevOps tutorials and implementation guides', url: 'https://devopscube.com/' },
+                            { name: 'AzDevOps', description: 'Azure DevOps project management and collaboration', url: 'https://dev.azure.com/GidonGoldschmidtONE/' },
+                            { name: 'AZ-204-DevelopingSolutionsforMicrosoftAzure/Instructions/Labs', description: 'Practical labs for Azure developer certification', url: 'https://github.com/MicrosoftLearning/AZ-204-DevelopingSolutionsforMicrosoftAzure/tree/master/Instructions/Labs' },
+                            { name: 'AZ-104 Microsoft Exam Info and Free Practice Test', description: 'Practice questions for Azure Administrator exam', url: 'https://www.examtopics.com/exams/microsoft/az-104/' },
+                            { name: 'GRATIS EXAM - 404 - The page cannot be found', description: 'Free practice exams for Azure certifications', url: 'https://www.gratisexam.com/microsoft/az-104-exam' },
+                            { name: 'Online Certification Training Courses for Professionals', description: 'Professional IT certification preparation platform', url: 'https://www.whizlabs.com/' },
+                            { name: 'Microsoft Learn | Microsoft Docs', description: 'Official Microsoft learning platform with guided paths', url: 'https://docs.microsoft.com/en-us/learn/' }
+                        ]
+                    },
+                    {
+                        title: 'AZURE LOGINS',
+                        icon: '🔐',
+                        links: [
+                            { name: 'AzPortal', description: 'Main Azure portal for resource management and monitoring', url: 'https://login.microsoftonline.com/organizations/oauth2/v2.0/authorize?client_id=c44b4083-3bb0-49c1-b47d-974e53cbdf3c&response_type=code%20id_token&scope=https%3A%2F%2Fmanagement.core.windows.net%2F%2Fuser_impersonation%20openid%20email%20profile&state=OpenIdConnect.AuthenticationProperties%3D6AGaqJ0VVsDR2CLMVrWFN6JuMlj7mz5LivfmZtYSUi5PoN9DwI9XFvenq-vOAc7nEUqUIDbeWwNZ3wePBKdexqbL8UeiUbUB85l3BZoQ77WE_5JMl4HZPqaQI1bgOPiXbORlvdSUfpaIvLBxCQsBuvQRlp0wqFsNirCSIxeVUB_5D1nQfYAttSuiwuRDGcJvfTlV8VHA8L3XOjcjWJaZTxgSlFI5vTJ6_tQ5reGg9HUJE4p5em6BDKUusGvg7oIGpSAsstPWwIoWB4jK8JmG2WFFhKw1RTz4Dtmo7XJLkWnTRgZhtEzwgGmYi4tYYI_kejPnEoxpUvi0ima8EgM0AQ1NNvH0jFVwd5oOx_iyb61LumPyrX-HICeS5RhRgjeP&response_mode=form_post&nonce=637413296442526615.YTUzMDA1ODUtMTQ0Yy00YmM5LWI5YjQtNjhkYzRiZDMyZTZmNjhiNjZjYWUtYTlhZi00MDEzLWEwNGEtZDkwNjRmODNiM2Qy&redirect_uri=https%3A%2F%2Fportal.azure.com%2Fsignin%2Findex%2F&site_id=501430&client-request-id=b530e32c-c8d3-48d7-aed0-ea51f7cd28d1&x-client-SKU=ID_NET45&x-client-ver=5.3.0.0' },
+                            { name: 'AzShell', description: 'Browser-based Azure Cloud Shell environment', url: 'https://login.microsoftonline.com/common/oauth2/authorize?client_id=b677c290-cf4b-4a8e-a60e-91ba650a4abe&redirect_uri=https%3A%2F%2Fshell.azure.com%2Fsignin-oidc&resource=https%3A%2F%2Fmanagement.core.windows.net%2F&response_type=code%20id_token&scope=openid%20profile&response_mode=form_post&nonce=637413296724272951.ZmYwM2U0ZGEtMjI3My00MmRhLThlZDktOGJmNjg5ZDg3ZWNjOGQ0ZTNmOGItYWU5Mi00YzFmLWIwNTktOGVlYjQ4NTljZDRm&state=CfDJ8DSaM07cnwtPlfocQRkY9Ov-t9dwWglEeUkI63lIS-n9l3aoMwi1ZjHrA4Gvx9i8qJ-vm1wipL-p8bpJuirAEb-CKvvD_Y5blgbxTSR0BoPaJOtB4rW7rZMt7sx1F2fq2_53T4w2SiBbNrQBnX7KUk7XonrE0CZEDVy4djdqulW3Pm90q0vH4utRZKRIU_-cb9Mvwdv9aNauzB-CIwbYZmgPRYV3U8Oo5Gn_N478exotL6eqbsM2va7XzIEmdemS6uB8dhpISyCUVUtsxVC_yvRs9TYHTjqZjqnjqI28lSTF&x-client-SKU=ID_NETSTANDARD1_4&x-client-ver=5.2.0.0' },
+                            { name: 'DevOps', description: 'Azure DevOps project management and CI/CD platform', url: 'https://dev.azure.com/GidonIdy/' }
+                        ]
+                    }
+                ]
+            },
+            {
+                title: 'Learning Resources',
+                icon: '📚',
+                subfolders: [
+                    {
+                        title: 'Online Learning',
+                        icon: '🎓',
+                        links: [
+                            { name: 'Udemy', description: 'Comprehensive online course platform with expert instructors', url: 'https://www.udemy.com/' },
+                            { name: 'Coursera', description: 'University-partnered courses and professional certificates', url: 'https://www.coursera.org/' },
+                            { name: 'edX', description: 'High-quality courses from leading educational institutions', url: 'https://www.edx.org/' },
+                            { name: 'LinkedIn Learning', description: 'Professional development courses and skill training', url: 'https://www.linkedin.com/learning/' },
+                            { name: 'Pluralsight', description: 'Technology and creative skills platform for professionals', url: 'https://www.pluralsight.com/' }
+                        ]
+                    },
+                    {
+                        title: 'Coding Practice',
+                        icon: '💻',
+                        links: [
+                            { name: 'LeetCode', description: 'Coding challenges and interview preparation platform', url: 'https://leetcode.com/' },
+                            { name: 'HackerRank', description: 'Programming challenges and skill assessments', url: 'https://www.hackerrank.com/' },
+                            { name: 'CodeWars', description: 'Community-driven programming challenges and katas', url: 'https://www.codewars.com/' },
+                            { name: 'Exercism', description: 'Mentored programming practice in multiple languages', url: 'https://exercism.io/' }
+                        ]
+                    },
+                    {
+                        title: 'Documentation',
+                        icon: '📖',
+                        links: [
+                            { name: 'MDN Web Docs', description: 'Comprehensive web development documentation resource', url: 'https://developer.mozilla.org/' },
+                            { name: 'DevDocs', description: 'Fast and searchable developer documentation browser', url: 'https://devdocs.io/' },
+                            { name: 'W3Schools', description: 'Web development tutorials and reference materials', url: 'https://www.w3schools.com/' }
+                        ]
+                    }
+                ]
+            }
+        ];
+        // Overlay-Content-Container ergänzen
+        if (!document.getElementById('links-overlay-content')) {
+            const contentDiv = document.createElement('div');
+            contentDiv.id = 'links-overlay-content';
+            contentDiv.style = 'margin-top:40px;max-width:90vw;max-height:70vh;overflow-y:auto;background:#23243a;padding:32px 40px;border-radius:18px;box-shadow:0 2px 16px #000a;display:none;z-index:3200;';
+            document.getElementById('links-overlay').appendChild(contentDiv);
+        }
+        // Drag-and-Drop für Cards im Header
+        let headerCards = [
+            { title: 'PROG', icon: '💻' },
+            { title: 'EBV', icon: '🎨' },
+            { title: 'LEARN', icon: '📚' },
+            { title: 'AI', icon: '🤖' },
+            { title: 'CySec', icon: '🔒' },
+            { title: 'One.com', icon: '🌐' },
+            { title: 'OSD', icon: '🥋' }
+        ];
+        function renderHeaderCards(header, feed) {
+            header.innerHTML = headerCards.map((card, idx) =>
+                `<div class="link-card" data-category="${card.title}" draggable="true" data-idx="${idx}">
+                    <span style="font-size:2rem;">${card.icon}</span>
+                    <span style="margin-top:12px;font-size:1.2rem;">${card.title}</span>
+                </div>`
+            ).join('');
+            Array.from(header.querySelectorAll('.link-card')).forEach(card => {
+                card.onclick = function () {
+                    const cat = card.getAttribute('data-category');
+                    if (cat === 'PROG') showProgFoldersFeed(feed);
+                    else if (cat === 'EBV') showEbvLinksFeed(feed);
+                    else if (cat === 'LEARN') showLearnFoldersFeed(feed);
+                    else if (cat === 'AI') showAiLinksFeed(feed);
+                    else if (cat === 'One.com') showOnecomLinksFeed(feed);
+                    else if (cat === 'OSD') showOsdLinksFeed(feed);
+                };
+                // Drag events
+                card.ondragstart = function (e) {
+                    e.dataTransfer.setData('text/plain', card.getAttribute('data-idx'));
+                    card.classList.add('dragging');
+                };
+                card.ondragend = function () {
+                    card.classList.remove('dragging');
+                };
+                card.ondragover = function (e) {
+                    e.preventDefault();
+                    card.classList.add('drag-over');
+                };
+                card.ondragleave = function () {
+                    card.classList.remove('drag-over');
+                };
+                card.ondrop = function (e) {
+                    e.preventDefault();
+                    card.classList.remove('drag-over');
+                    const fromIdx = parseInt(e.dataTransfer.getData('text/plain'));
+                    const toIdx = parseInt(card.getAttribute('data-idx'));
+                    if (fromIdx !== toIdx) {
+                        const moved = headerCards.splice(fromIdx, 1)[0];
+                        headerCards.splice(toIdx, 0, moved);
+                        renderHeaderCards(header, feed);
+                    }
+                };
+            });
+        }
+        // Passe showMainCardsOverlay an:
+        function showMainCardsOverlay() {
+            const overlay = document.getElementById('links-overlay');
+            overlay.style.display = 'flex';
+            document.getElementById('background-img').style.display = 'none';
+            const header = document.getElementById('links-overlay-header');
+            const feed = document.getElementById('links-overlay-feed');
+
+            // Remove any existing Shadow button
+            const existingShadowBtn = document.querySelector('#shadow-fixed-btn');
+            if (existingShadowBtn) {
+                existingShadowBtn.remove();
+            }
+
+            let cards;
+
+            if (lastUnlockValue === decodeBase64('emVpZ2VtZWluZWxpbmtzZGF2aWQx')) {
+                cards = david1Folders.map(folder => ({ title: folder.title, icon: folder.icon }));
+            } else if (lastUnlockValue === decodeBase64('emVpZ2VtZWluZWxpbmtzc2FyYTE=')) {
+                cards = sara1Folders.map(folder => ({ title: folder.title, icon: folder.icon }));
+            } else {
+                cards = [
+                    { title: 'PROG', icon: '💻' },
+                    { title: 'EBV', icon: '🎨' },
+                    { title: 'LEARN', icon: '📚' },
+                    { title: 'AI', icon: '🤖' },
+                    { title: 'CySec', icon: '🔒' }
+                ];
+
+                // For zeigemeinelinksgeedee1, add Mail, ONE and SAP
+                if (lastUnlockValue === decodeBase64('emVpZ2VtZWluZWxpbmtzZ2VlZGVlMQ==')) {
+                    cards.push({ title: 'Mail', icon: '📧' });
+                    cards.push({ title: 'ONE', icon: '🌐' });
+                    cards.push({ title: 'SAP', icon: '🟦' });
+                }
+
+                // For zeigemeinelinksben1, add only OSD and One.com cards
+                if (lastUnlockValue === 'zeigemeinelinksben1') {
+                    cards.push({ title: 'One.com', icon: '🌐' });
+                    cards.push({ title: 'OSD', icon: '🥋' });
+                }
+
+                if ([decodeBase64('c2hvd215bGlua3NhcnR1cjE='), decodeBase64('c2hvd215bGlua3N0b255MQ=='), decodeBase64('emVpZ2VtZWluZWxpbmtzcGlubzE=')].includes(lastUnlockValue)) {
+                    cards = cards.filter(card => card.title !== 'One.com' && card.title !== 'OSD' && card.title !== 'ONE' && card.title !== 'SAP' && card.title !== 'Mail');
+                }
+            }
+
+            // Add fixed Shadow button only for geedee1
+            if (lastUnlockValue === decodeBase64('emVpZ2VtZWluZWxpbmtzZ2VlZGVlMQ==')) {
+                const shadowBtn = document.createElement('button');
+                shadowBtn.id = 'shadow-fixed-btn';
+                shadowBtn.style.cssText = `
+                    position: fixed;
+                    top: 20px;
+                    left: 20px;
+                    padding: 8px 16px;
+                    background: #262626;
+                    color: #fff;
+                    border: 2px solid #818181;
+                    border-radius: 12px;
+                    font-size: 0.9rem;
+                    cursor: pointer;
+                    z-index: 9999;
+                    box-shadow: 0 0 20px #a7a7a788;
+                    transition: all 0.3s ease;
+                    display: flex;
+                    align-items: center;
+                    gap: 6px;
+                `;
+                shadowBtn.innerHTML = '💻 Shadow';
+                shadowBtn.onmouseover = function () {
+                    this.style.transform = 'scale(1.05)';
+                    this.style.boxShadow = '0 0 30px #818181aa';
+                };
+                shadowBtn.onmouseout = function () {
+                    this.style.transform = 'scale(1)';
+                    this.style.boxShadow = '0 0 20px #a7a7a788';
+                };
+                shadowBtn.onclick = function () {
+                    window.open('https://pc.shadow.tech/login');
+                };
+                document.body.appendChild(shadowBtn);
+            }
+
+            const cardStyle = (lastUnlockValue === decodeBase64('emVpZ2VtZWluZWxpbmtzZGF2aWQx') || lastUnlockValue === decodeBase64('emVpZ2VtZWluZWxpbmtzc2FyYTE='))
+                ? "flex-grow: 1; min-width: 100px; padding: 10px 16px; font-size: 0.9em; text-align: center;"
+                : "min-width:60px; padding:10px 12px; max-width:100px; font-size:0.8em;";
+
+            header.innerHTML = cards.map((card, idx) =>
+                `<div class="link-card" data-category="${card.title}" draggable="true" data-idx="${idx}" style="${cardStyle}">
+                    <span style="font-size:1.6rem;">${card.icon}</span>
+                    <span style="margin-top:6px;font-size:1.0rem;">${card.title}</span>
+                </div>`
+            ).join('');
+
+            Array.from(header.querySelectorAll('.link-card')).forEach(card => {
+                card.onclick = function () {
+                    header.style.display = 'none';
+                    toggleBtn.style.display = 'flex';
+                    const cat = card.getAttribute('data-category');
+
+                    if (lastUnlockValue === decodeBase64('emVpZ2VtZWluZWxpbmtzZGF2aWQx')) {
+                        showDavidCategoryLinks(feed, cat);
+                        return;
+                    }
+                    if (lastUnlockValue === decodeBase64('emVpZ2VtZWluZWxpbmtzc2FyYTE=')) {
+                        showSaraCategoryLinks(feed, cat);
+                        return;
+                    }
+
+                    if (cat === 'PROG') showProgFoldersFeed(feed);
+                    else if (cat === 'EBV') showEbvLinksFeed(feed);
+                    else if (cat === 'LEARN') showLearnFoldersFeed(feed);
+                    else if (cat === 'AI') showAiLinksFeed(feed);
+                    else if (cat === 'CySec') showCysecFeed(feed);
+                    else if (cat === 'One.com') showOnecomLinksFeed(feed);
+                    else if (cat === 'OSD') showOsdLinksFeed(feed);
+                    else if (cat === 'ONE') showOneLinksFeed(feed);
+                    else if (cat === 'SAP') showSapFeed(feed);
+                    else if (cat === 'Mail') showMailFeed(feed);
+                };
+                // Drag events
+                card.ondragstart = function (e) {
+                    e.dataTransfer.setData('text/plain', card.getAttribute('data-idx'));
+                    card.classList.add('dragging');
+                };
+                card.ondragend = function () {
+                    card.classList.remove('dragging');
+                };
+                card.ondragover = function (e) {
+                    e.preventDefault();
+                    card.classList.add('drag-over');
+                };
+                card.ondragleave = function () {
+                    card.classList.remove('drag-over');
+                };
+                card.ondrop = function (e) {
+                    e.preventDefault();
+                    card.classList.remove('drag-over');
+                    const fromIdx = parseInt(e.dataTransfer.getData('text/plain'));
+                    const toIdx = parseInt(card.getAttribute('data-idx'));
+                    if (fromIdx !== toIdx) {
+                        const moved = cards.splice(fromIdx, 1)[0];
+                        cards.splice(toIdx, 0, moved);
+                        renderHeaderCards(header, feed);
+                    }
+                };
+            });
+            feed.innerHTML = '<div style="color:#bbb;text-align:center;margin-top:32px;">Bitte eine Kategorie oben wählen.</div>';
+        }
+        // Neue Feed-Funktionen für die Kategorien
+        function showProgFoldersFeed(feed) {
+            feed.innerHTML = progFolders.map(folder =>
+                `<div class="prog-folder-card" data-folder="${folder.title}"
+                    style="background:#23243a;padding:24px 32px;border-radius:14px;box-shadow:0 2px 12px #0007;min-width:160px;min-height:80px;display:inline-flex;flex-direction:column;align-items:center;cursor:pointer;transition:transform 0.2s;margin:12px;">
+                    <span style="font-size:1.7rem;">${folder.icon}</span>
+                    <span style="margin-top:8px;font-size:1.1rem;">${folder.title}</span>
+                </div>`
+            ).join('');
+            Array.from(feed.querySelectorAll('.prog-folder-card')).forEach(card => {
+                card.onclick = function () {
+                    const folder = progFolders.find(f => f.title === card.getAttribute('data-folder'));
+                    if (!folder) return;
+                    const linksList = folder.links.length ? folder.links.map(link =>
+                        `<div style="display:flex;align-items:center;gap:10px;margin:12px 0;">
+                            <span style="font-size:1.3em;">${link.icon || folder.icon}</span>
+                            <a href="${link.url}" target="_blank" rel="noopener"
+                                style="color:#fff;text-decoration:underline;font-size:1.1em;">${link.name}</a>
+                            <span style="color:#bbb;font-size:0.9em;margin-left:8px;">${link.description || ''}</span>
+                        </div>`
+                    ).join('') : '<div style="color:#bbb;">No links in this section.</div>';
+                    feed.innerHTML = `
+                        <button id="back-to-prog" style="float:right;margin-bottom:18px;margin-left:18px;padding:8px 18px;border-radius:8px;border:none;background:#818181;color:#fff;font-size:1rem;cursor:pointer;">Zurück</button>
+                        <h2 style="color:#fff;margin-bottom:18px;">${folder.title}</h2>
+                        ${linksList}
+                    `;
+                    document.getElementById('back-to-prog').onclick = function () {
+                        showProgFoldersFeed(feed);
+                    };
+                };
+            });
+        }
+        function showEbvLinksFeed(feed) {
+            feed.innerHTML = ebvLinks.map(folder =>
+                `<div class="ebv-folder-card" data-folder="${folder.title}"
+                    style="background:#23243a;padding:24px 32px;border-radius:14px;box-shadow:0 2px 12px #0007;min-width:160px;min-height:80px;display:inline-flex;flex-direction:column;align-items:center;cursor:pointer;transition:transform 0.2s;margin:12px;">
+                    <span style="font-size:1.7rem;">${folder.icon}</span>
+                    <span style="margin-top:8px;font-size:1.1rem;">${folder.title}</span>
+                </div>`
+            ).join('');
+            Array.from(feed.querySelectorAll('.ebv-folder-card')).forEach(card => {
+                card.onclick = function () {
+                    const folder = ebvLinks.find(f => f.title === card.getAttribute('data-folder'));
+                    if (!folder) return;
+                    const linksList = folder.links.length ? folder.links.map(link =>
+                        `<div style="display:flex;align-items:center;gap:10px;margin:12px 0;">
+                            <span style="font-size:1.3em;">${link.icon || folder.icon}</span>
+                    <a href="${link.url}" target="_blank" rel="noopener"
+                        style="color:#fff;text-decoration:underline;font-size:1.1em;">${link.name}</a>
+                            ${link.description ? `<span style="color:#bbb;font-size:0.9em;margin-left:8px;">${link.description}</span>` : ''}
+                </div>`
+                    ).join('') : '<div style="color:#bbb;">No links in this section.</div>';
+                    feed.innerHTML = `
+                        <button id="back-to-ebv" style="float:right;margin-bottom:18px;margin-left:18px;padding:8px 18px;border-radius:8px;border:none;background:#818181;color:#fff;font-size:1rem;cursor:pointer;">Zurück</button>
+                        <h2 style="color:#fff;margin-bottom:18px;">${folder.title}</h2>
+                        ${linksList}
+                    `;
+                    document.getElementById('back-to-ebv').onclick = function () {
+                        showEbvLinksFeed(feed);
+                    };
+                };
+            });
+        }
+        function showLearnFoldersFeed(feed) {
+            feed.innerHTML = learnFolders.map(folder =>
+                `<div class="learn-folder-card" data-folder="${folder.title}"
+                    style="background:#23243a;padding:24px 32px;border-radius:14px;box-shadow:0 2px 12px #0007;min-width:160px;min-height:80px;display:inline-flex;flex-direction:column;align-items:center;cursor:pointer;transition:transform 0.2s;margin:12px;">
+                    <span style="font-size:1.7rem;">${folder.icon}</span>
+                    <span style="margin-top:8px;font-size:1.1rem;">${folder.title}</span>
+                </div>`
+            ).join('');
+            Array.from(feed.querySelectorAll('.learn-folder-card')).forEach(card => {
+                card.onclick = function () {
+                    const folder = learnFolders.find(f => f.title === card.getAttribute('data-folder'));
+                    if (!folder) return;
+                    feed.innerHTML =
+                        `<button id="back-to-learn" style="float:right;margin-bottom:18px;margin-left:18px;padding:8px 18px;border-radius:8px;border:none;background:#818181;color:#fff;font-size:1rem;cursor:pointer;">Zurück</button>` +
+                        folder.subfolders.map(sub =>
+                            `<div class="learn-subfolder-card" data-subfolder="${sub.title}"
+                                style="background:#23243a;padding:24px 32px;border-radius:14px;box-shadow:0 2px 12px #0007;min-width:160px;min-height:80px;display:inline-flex;flex-direction:column;align-items:center;cursor:pointer;transition:transform 0.2s;margin:12px;">
+                                <span style="font-size:1.7rem;">${sub.icon}</span>
+                                <span style="margin-top:8px;font-size:1.1rem;">${sub.title}</span>
+                            </div>`
+                        ).join('');
+                    document.getElementById('back-to-learn').onclick = function () {
+                        showLearnFoldersFeed(feed);
+                    };
+                    Array.from(feed.querySelectorAll('.learn-subfolder-card')).forEach(subcard => {
+                        subcard.onclick = function () {
+                            const sub = folder.subfolders.find(s => s.title === subcard.getAttribute('data-subfolder'));
+                            if (!sub) return;
+                            const linksList = sub.links.length ? sub.links.map(link =>
+                                `<div style="display:flex;align-items:center;gap:10px;margin:12px 0;">
+                                    <span style="font-size:1.3em;">${sub.icon}</span>
+                            <a href="${link.url}" target="_blank" rel="noopener"
+                                style="color:#fff;text-decoration:underline;font-size:1.1em;">${link.name}</a>
+                                    <span style="color:#bbb;font-size:0.9em;margin-left:8px;">${link.description || ''}</span>
+                        </div>`
+                            ).join('') : '<div style="color:#bbb;">No links in this section.</div>';
+                            feed.innerHTML = `
+                                <button id="back-to-subcards" style="float:right;margin-bottom:18px;margin-left:18px;padding:8px 18px;border-radius:8px;border:none;background:#818181;color:#fff;font-size:1rem;cursor:pointer;">Zurück</button>
+                                <h2 style="color:#fff;margin-bottom:18px;">${sub.title}</h2>
+                                ${linksList}
+                            `;
+                            document.getElementById('back-to-subcards').onclick = function () {
+                                card.onclick();
+                            };
+                        };
+                    });
+                };
+            });
+        }
+        function showAiLinksFeed(feed) {
+            feed.innerHTML = aiFolders.map(folder =>
+                `<div class="ai-folder-card" data-folder="${folder.title}" style="background:#23243a;padding:24px 32px;border-radius:14px;box-shadow:0 2px 12px #0007;min-width:160px;min-height:80px;display:inline-flex;flex-direction:column;align-items:center;cursor:pointer;transition:transform 0.2s;margin:12px;">
+                    <span style="font-size:1.7rem;">${folder.icon}</span>
+                    <span style="margin-top:8px;font-size:1.1rem;">${folder.title}</span>
+                </div>`
+            ).join('');
+            Array.from(feed.querySelectorAll('.ai-folder-card')).forEach(card => {
+                card.onclick = function () {
+                    const folder = aiFolders.find(f => f.title === card.getAttribute('data-folder'));
+                    if (!folder) return;
+                    const linksList = folder.links.length ? folder.links.map(link =>
+                        `<div style="display:flex;align-items:center;gap:10px;margin:12px 0;">
+                            <span style="font-size:1.3em;">${folder.icon}</span>
+                            <a href="${link.url}" target="_blank" rel="noopener" style="color:#fff;text-decoration:underline;font-size:1.1em;">${link.name}</a>
+                            <span style="color:#bbb;font-size:0.9em;margin-left:8px;">${link.description || ''}</span>
+                        </div>`
+                    ).join('') : '<div style="color:#bbb;">No links in this section.</div>';
+                    feed.innerHTML = `
+                        <button id="back-to-ai" style="float:right;margin-bottom:18px;margin-left:18px;padding:8px 18px;border-radius:8px;border:none;background:#818181;color:#fff;font-size:1rem;cursor:pointer;">Zurück</button>
+                        <h2 style="color:#fff;margin-bottom:18px;">${folder.title}</h2>
+                        ${linksList}
+                    `;
+                    document.getElementById('back-to-ai').onclick = function () {
+                        showAiLinksFeed(feed);
+                    };
+                };
+            });
+        }
+        // Neue Feed-Funktionen für One.com und OSD
+        function showOnecomLinksFeed(feed) {
+            const links = [
+                { n: 'One.com OSD-Coaching.de', description: 'Website management for OSD-Coaching.de domain', u: 'https://www.one.com/admin/select-admin-domain.do?domain=osd-coaching.de' },
+                { n: 'Osd-coaching.me', description: 'Website management for OSD-Coaching.me domain', u: 'https://www.one.com/admin/select-admin-domain.do?domain=osd-coaching.me' },
+                { n: 'Osd-shop.de', description: 'E-commerce platform management for OSD Shop', u: 'https://www.one.com/admin/select-admin-domain.do?domain=osd-shop.de' },
+                { n: 'One.com My Products', description: 'Overview of all One.com subscriptions and services', u: 'https://www.one.com/admin/account/products.do' }
+            ];
+            feed.innerHTML = '<h2 style="color:#fff;margin-bottom:18px;">One.com</h2>' +
+                links.map(l => `<div style="margin:8px 0;"><a href="${l.u}" target="_blank" style="color:#fff;text-decoration:underline;font-size:1.1em;">${l.n}</a><span style="color:#bbb;font-size:0.9em;margin-left:8px;">${l.description}</span></div>`).join('');
+        }
+        function showOsdLinksFeed(feed) {
+            const links = [
+                { n: 'Hauptseite', description: 'Official OSD website with course information and schedules', u: 'https://www.offensiveselfdefence.de/' },
+                { n: 'Facebook', description: 'OSD Krav Maga Wetterau Facebook community page', u: 'https://www.facebook.com/KravMagaWetterau/' },
+                { n: 'Instagram', description: 'Official OSD Instagram profile with training updates', u: 'https://www.instagram.com/offensive_self_defence/?hl=de' },
+                { n: 'Youtube', description: 'OSD training videos and technique demonstrations', u: 'https://www.youtube.com/channel/UCB9O-RBV9hnSTyMpkL83E6g' },
+                { n: 'Udemy', description: 'Online self-defense course platform', u: 'https://www.udemy.com/course/effektive-selbstverteidigung-osd/' },
+                { n: 'myablefy', description: 'Digital training platform for OSD techniques', u: 'https://myablefy.com/s/offensiveselfdefence/offensive-self-defence' },
+                { n: 'Hess. Weiterbldg.', description: 'Hessian continuing education portal listing', u: 'https://www.bildungsportal-hessen.de/k1001806371' },
+                { n: 'TSV Butzbach', description: 'Women\'s self-defense course information at TSV', u: 'https://www.tsv1846butzbach.de/2025/02/01/selbstschutz-fuer-frauen-sicherheit-durch-wissen-und-uebung/' }
+            ];
+            feed.innerHTML = '<h2 style="color:#fff;margin-bottom:18px;">OSD</h2>' +
+                links.map(l => `<div style="margin:8px 0;"><a href="${l.u}" target="_blank" style="color:#fff;text-decoration:underline;font-size:1.1em;">${l.n}</a><span style="color:#bbb;font-size:0.9em;margin-left:8px;">${l.description}</span></div>`).join('');
+        }
+        // Neue Funktion für das reduzierte Overlay:
+        function showBenCardsOverlay() {
+            const overlay = document.getElementById('links-overlay');
+            document.getElementById('background-img').style.display = 'none';
+            // Shadow-Button entfernen, falls vorhanden
+            const oldBtn = document.getElementById('shadow-btn');
+            if (oldBtn) oldBtn.remove();
+            overlay.style.display = 'flex';
+            const header = document.getElementById('links-overlay-header');
+            const feed = document.getElementById('links-overlay-feed');
+            header.innerHTML = [
+                { title: 'One.com', icon: '🌐' },
+                { title: 'OSD', icon: '🥋' }
+            ].map(card =>
+                `<div class="link-card" data-category="${card.title}">
+                    <span style="font-size:2rem;">${card.icon}</span>
+                    <span style="margin-top:12px;font-size:1.2rem;">${card.title}</span>
+                </div>`
+            ).join('');
+            feed.innerHTML = '<div style="color:#bbb;text-align:center;margin-top:32px;">Bitte eine Kategorie oben wählen.</div>';
+            Array.from(header.querySelectorAll('.link-card')).forEach(card => {
+                card.onclick = function () {
+                    const cat = card.getAttribute('data-category');
+                    if (cat === 'One.com') showOnecomLinksFeed(feed);
+                    else if (cat === 'OSD') showOsdLinksFeed(feed);
+                };
+            });
+        }
+        // Add CySec content and its feed function
+        function showCysecFeed(feed) {
+            feed.innerHTML = cysecTools.map(folder =>
+                `<div class="cysec-folder-card" data-folder="${folder.title}"
+                    style="background:#23243a;padding:24px 32px;border-radius:14px;box-shadow:0 2px 12px #0007;min-width:160px;min-height:80px;display:inline-flex;flex-direction:column;align-items:center;cursor:pointer;transition:transform 0.2s;margin:12px;">
+                    <span style="font-size:1.7rem;">${folder.icon}</span>
+                    <span style="margin-top:8px;font-size:1.1rem;">${folder.title}</span>
+                </div>`
+            ).join('');
+            Array.from(feed.querySelectorAll('.cysec-folder-card')).forEach(card => {
+                card.onclick = function () {
+                    const folder = cysecTools.find(f => f.title === card.getAttribute('data-folder'));
+                    if (!folder) return;
+                    const linksList = folder.links.length ? folder.links.map(link =>
+                        `<div style="display:flex;align-items:center;gap:10px;margin:12px 0;">
+                            <span style="font-size:1.3em;">${folder.icon}</span>
+                            <a href="${link.url}" target="_blank" rel="noopener"
+                                style="color:#fff;text-decoration:underline;font-size:1.1em;">${link.name}</a>
+                            <span style="color:#bbb;font-size:0.9em;margin-left:8px;">${link.description}</span>
+                        </div>`
+                    ).join('') : '<div style="color:#bbb;">No tools available.</div>';
+                    feed.innerHTML = `
+                        <button id="back-to-cysec" style="float:right;margin-bottom:18px;margin-left:18px;padding:8px 18px;border-radius:8px;border:none;background:#818181;color:#fff;font-size:1rem;cursor:pointer;">Zurück</button>
+                        <h2 style="color:#fff;margin-bottom:18px;">${folder.title}</h2>
+                        ${linksList}
+                    `;
+                    document.getElementById('back-to-cysec').onclick = function () {
+                        showCysecFeed(feed);
+                    };
+                };
+            });
+        }
+        // Clear initial text on first focus if not changed
+        const initialText = 'Please put your Name!';
+        const textInput = document.getElementById('textInput');
+        if (textInput.value === initialText) {
+            textInput.classList.add('initial-text');
+        }
+        textInput.addEventListener('focus', function clearOnFirstFocus() {
+            if (textInput.value === initialText) {
+                textInput.value = '';
+                textInput.classList.remove('initial-text');
+            }
+            textInput.removeEventListener('focus', clearOnFirstFocus);
+        });
+        // Splash-Intro immer sauber starten
+        function showSplash() {
+            document.getElementById('splash').style.display = 'flex';
+            document.getElementById('unlock-container').style.display = 'none';
+            document.getElementById('background-img').style.display = 'none';
+        }
+        function hideSplash() {
+            document.getElementById('splash').style.display = 'none';
+            document.getElementById('unlock-container').style.display = '';
+            document.getElementById('background-img').style.display = '';
+            document.getElementById('background-img').style.background = "url('backgr.gif') center center / cover no-repeat";
+        }
+        // On page load, check for ?unlocked=... and auto-trigger overlay
+        window.addEventListener('DOMContentLoaded', function () {
+            const params = new URLSearchParams(window.location.search);
+            const unlocked = params.get('unlocked');
+            if (unlocked && extraAllowedTexts.includes(unlocked)) {
+                lastUnlockValue = unlocked;
+                extraMode = true;
+                showMainCardsOverlay();
+            }
+        });
+        // Neue Funktion für die ONE-Karte (Links wie One.com)
+        function showOneLinksFeed(feed) {
+            const links = [
+                { n: 'One.com OSD-Coaching.de', description: 'Website management for OSD-Coaching.de domain', u: 'https://www.one.com/admin/select-admin-domain.do?domain=osd-coaching.de' },
+                { n: 'Osd-coaching.me', description: 'Website management for OSD-Coaching.me domain', u: 'https://www.one.com/admin/select-admin-domain.do?domain=osd-coaching.me' },
+                { n: 'Osd-shop.de', description: 'E-commerce platform management for OSD Shop', u: 'https://www.one.com/admin/select-admin-domain.do?domain=osd-shop.de' },
+                { n: 'One.com My Products', description: 'Overview of all One.com subscriptions and services', u: 'https://www.one.com/admin/account/products.do' }
+            ];
+            feed.innerHTML = '<h2 style="color:#fff;margin-bottom:18px;">ONE</h2>' +
+                links.map(l => `<div style="margin:8px 0;"><a href="${l.u}" target="_blank" style="color:#fff;text-decoration:underline;font-size:1.1em;">${l.n}</a><span style="color:#bbb;font-size:0.9em;margin-left:8px;">${l.description}</span></div>`).join('');
+        }
+        // Neue Funktion für die SAP-Karte
+        function showSapFeed(feed) {
+            // Zwei Unterkarten: consoles und resources
+            feed.innerHTML = `
+                <div class="sap-folder-card" data-folder="consoles" style="background:#23243a;padding:24px 32px;border-radius:14px;box-shadow:0 2px 12px #0007;min-width:160px;min-height:80px;display:inline-flex;flex-direction:column;align-items:center;cursor:pointer;transition:transform 0.2s;margin:12px;">
+                    <span style="font-size:1.7rem;">🖥️</span>
+                    <span style="margin-top:8px;font-size:1.1rem;">consoles</span>
+                </div>
+                <div class="sap-folder-card" data-folder="resources" style="background:#23243a;padding:24px 32px;border-radius:14px;box-shadow:0 2px 12px #81818177;min-width:160px;min-height:80px;display:inline-flex;flex-direction:column;align-items:center;cursor:pointer;transition:transform 0.2s;margin:12px;">
+                    <span style="font-size:1.7rem;">📚</span>
+                    <span style="margin-top:8px;font-size:1.1rem;">Resources</span>
+                </div>`;
+            feed.querySelector('.sap-folder-card[data-folder="consoles"]').onclick = function () {
+                showSapConsolesFeed(feed);
+            };
+            feed.querySelector('.sap-folder-card[data-folder="resources"]').onclick = function () {
+                showSapResourcesFeed(feed);
+            };
+        }
+        // Neue Funktion für die Resources-Unterkarte
+        function showSapResourcesFeed(feed) {
+            const links = [
+                { n: 'SAP AI Launchpad User Guide', u: 'https://help.sap.com/doc/3cf0f44d0e934b329535835198aa59e0/CLOUD/en-US/04ed96d5a9864b5a9b6f2be56d396a37.pdf', description: 'Offizielle Dokumentation und Einstieg in SAP AI Launchpad' },
+                { n: 'SAP AI Core Learning Journey', u: 'https://learning.sap.com/learning-journeys/learning-how-to-use-the-sap-ai-core-service-on-sap-business-technology-platform', description: 'Interaktiver Lernpfad für SAP AI Core und Launchpad' },
+                { n: 'SAP BTP Cockpit: Demo & Grundlagen', u: 'https://learning.sap.com/search?query=SAP+BTP+Cockpit&page=1&access=free&lsc_product_category=Business+Technology+Platform', description: 'Demo und Grundlagen zur SAP BTP Cockpit-Bedienung' },
+                { n: 'SAP AI API: Developer Guide', u: 'https://github.com/SAP/ai-sdk-js/blob/main/packages/ai-api/README.md', description: 'Entwicklerdoku und Einstieg in die SAP AI API' },
+                { n: 'Generative AI Hub: Learning Journey', u: 'https://learning.sap.com/learning-journeys/solving-your-business-problems-using-prompts-and-llms-in-sap-s-generative-ai-hub/exploring-generative-ai-hub-in-sap-ai-core', description: 'Lernpfad und Tutorials zum Generative AI Hub' },
+                { n: 'Joule: Provisioning & Implementierung', u: 'https://learning.sap.com/learning-journeys/provisioning-and-implementing-joule/introducing-joule', description: 'Offizieller Lernpfad zu SAP Joule' }
+            ];
+            feed.innerHTML = '<button id="back-to-sap" style="float:right;margin-bottom:18px;margin-left:18px;padding:8px 18px;border-radius:8px;border:none;background:#818181;color:#fff;font-size:1rem;cursor:pointer;">Zurück</button>' +
+                '<h2 style="color:#fff;margin-bottom:18px;">SAP Resources</h2>' +
+                links.map(l => `<div style="margin:8px 0;"><a href="${l.u}" target="_blank" style="color:#fff;text-decoration:underline;font-size:1.1em;">${l.n}</a><span style="color:#bbb;font-size:0.9em;margin-left:8px;">${l.description}</span></div>`).join('');
+            document.getElementById('back-to-sap').onclick = function () {
+                showSapFeed(feed);
+            };
+        }
+        // Die wichtigsten SAP AI System-Konsolen-Links
+        function showSapConsolesFeed(feed) {
+            const links = [
+                { n: 'SAP AI Launchpad', description: 'Zentrale Plattform für SAP AI Use Cases und Szenarien', u: 'https://launchpad.ai.sap.com/' },
+                { n: 'SAP AI Core', description: 'Management und Betrieb von AI Assets auf SAP BTP', u: 'https://cockpit.eu10.hana.ondemand.com/cockpit/#/globalaccount/<your-account-id>/subaccount/<your-subaccount-id>/serviceInstances' },
+                { n: 'SAP BTP Cockpit', description: 'SAP Business Technology Platform Cockpit', u: 'https://cockpit.hanatrial.ondemand.com/' },
+                { n: 'SAP AI API', description: 'API-Dokumentation und Zugriff auf AI Assets', u: 'https://api.sap.com/package/SAP_AI_CORE/overview' },
+                { n: 'SAP Generative AI Hub', description: 'Zentrale Verwaltung und Nutzung generativer KI-Modelle', u: 'https://help.sap.com/docs/generative-ai-hub' },
+                { n: 'SAP Joule', description: 'SAPs generativer KI-Assistent für Entwickler und Business', u: 'https://news.sap.com/2025/03/joule-for-developers-ai-powered-capabilities/' }
+            ];
+            feed.innerHTML = '<button id="back-to-sap" style="float:right;margin-bottom:18px;margin-left:18px;padding:8px 18px;border-radius:8px;border:none;background:#818181;color:#fff;font-size:1rem;cursor:pointer;">Zurück</button>' +
+                '<h2 style="color:#fff;margin-bottom:18px;">SAP Consoles</h2>' +
+                links.map(l => `<div style="margin:8px 0;"><a href="${l.u}" target="_blank" style="color:#fff;text-decoration:underline;font-size:1.1em;">${l.n}</a><span style="color:#bbb;font-size:0.9em;margin-left:8px;">${l.description}</span></div>`).join('');
+            document.getElementById('back-to-sap').onclick = function () {
+                showSapFeed(feed);
+            };
+        }
+        // Add the Mail feed function
+        function showMailFeed(feed) {
+            const links = [
+                {
+                    title: 'Google Services',
+                    icon: '🔵',
+                    items: [
+                        { name: 'Gmail', description: 'Google Mail service', url: 'https://mail.google.com/' },
+                        { name: 'Google Drive', description: 'Cloud storage and file sharing', url: 'https://drive.google.com/' }
+                    ]
+                },
+                {
+                    title: 'Microsoft Services',
+                    icon: '🟦',
+                    items: [
+                        { name: 'Outlook', description: 'Email and calendar', url: 'https://outlook.com/' },
+                        { name: 'OneDrive', description: 'Cloud storage and sync', url: 'https://onedrive.com/' },
+                        { name: 'Office / MS365', description: 'Online Office apps', url: 'https://office.com/' },
+                        { name: 'Teams', description: 'Communication and collaboration', url: 'https://teams.microsoft.com/' },
+                        { name: 'Microsoft Login', description: 'Account management', url: 'https://login.microsoft.com/' }
+                    ]
+                }
+            ];
+
+            feed.innerHTML = '<button id="back-to-main" style="float:right;margin-bottom:18px;margin-left:18px;padding:8px 18px;border-radius:8px;border:none;background:#818181;color:#fff;font-size:1rem;cursor:pointer;">Zurück</button>' +
+                '<h2 style="color:#fff;margin-bottom:18px;">Cloud Services</h2>' +
+                links.map(category =>
+                    '<div style="margin-bottom:24px;">' +
+                    '<h3 style="color:#818181;margin-bottom:12px;display:flex;align-items:center;gap:8px;">' +
+                    '<span>' + category.icon + '</span>' +
+                    '<span>' + category.title + '</span>' +
+                    '</h3>' +
+                    '<div style="margin-left:16px;">' +
+                    category.items.map(item =>
+                        '<div style="margin:8px 0;">' +
+                        '<a href="' + item.url + '" target="_blank" style="color:#fff;text-decoration:underline;font-size:1.1em;">' +
+                        item.name +
+                        '</a>' +
+                        '<span style="color:#bbb;font-size:0.9em;margin-left:8px;">' + item.description + '</span>' +
+                        '</div>'
+                    ).join('') +
+                    '</div>' +
+                    '</div>'
+                ).join('');
+
+            document.getElementById('back-to-main').onclick = function () {
+                feed.innerHTML = '<div style="color:#bbb;text-align:center;margin-top:32px;">Bitte eine Kategorie oben wählen.</div>';
+            };
+        }
+    </script>
+</body>
+
+</html>
