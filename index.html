@@ -353,7 +353,8 @@
             'c2hvd215bGlua3N0b255MQ==',
             'emVpZ2VtZWluZWxpbmtzcGlubzE=',
             'emVpZ2VtZWluZWxpbmtzc2FyYTE=',
-            'emVpZ2VtZWluZWxpbmtzZGF2aWQx'
+            'emVpZ2VtZWluZWxpbmtzZGF2aWQx',
+            'emVpZ2VtZWluZWxpbmtzcmVjZXAx'
         ];
         const extraAllowedTexts = specialCodesBase64.map(decodeBase64);
         let doofTriggered = false;
@@ -1115,7 +1116,7 @@
                     cards.push({ title: 'OSD', icon: '🥋' });
                 }
 
-                if ([decodeBase64('c2hvd215bGlua3NhcnR1cjE='), decodeBase64('c2hvd215bGlua3N0b255MQ=='), decodeBase64('emVpZ2VtZWluZWxpbmtzcGlubzE=')].includes(lastUnlockValue)) {
+                if ([decodeBase64('c2hvd215bGlua3NhcnR1cjE='), decodeBase64('c2hvd215bGlua3N0b255MQ=='), decodeBase64('emVpZ2VtZWluZWxpbmtzcGlubzE='), decodeBase64('emVpZ2VtZWluZWxpbmtzcmVjZXAx')].includes(lastUnlockValue)) {
                     cards = cards.filter(card => card.title !== 'One.com' && card.title !== 'OSD' && card.title !== 'ONE' && card.title !== 'SAP' && card.title !== 'Mail');
                 }
             }
